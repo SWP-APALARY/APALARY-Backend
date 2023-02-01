@@ -4,7 +4,7 @@ import com.backend.swp.apalary.model.constant.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "job_offering")
@@ -20,8 +20,8 @@ public class JobOffering {
     private String description;
     @Column(name = "base_salary")
     private Integer baseSalary;
-    @Column(name = "created_time")
-    private Date createdTime;
+    @Column(name = "created_time", insertable = false, updatable = false)
+    private Timestamp createdTime;
     @Column
     @Enumerated(EnumType.STRING)
     private Status status;
