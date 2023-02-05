@@ -1,10 +1,14 @@
 package com.backend.swp.apalary.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ContractDTO {
     private String id;
     private Integer base;
