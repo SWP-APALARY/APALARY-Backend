@@ -33,5 +33,6 @@ public class Contract {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private ContractType contractType;
-
+    @OneToOne(mappedBy = "contract")
+    private Employee employee;
 }
