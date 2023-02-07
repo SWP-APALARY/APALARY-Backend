@@ -41,6 +41,8 @@ public class Employee {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Department department;
-
+    @OneToOne
+    @JoinColumn(name = "contract_id")
+    private Contract contract;
 
 }
