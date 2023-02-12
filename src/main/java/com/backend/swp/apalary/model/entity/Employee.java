@@ -1,17 +1,24 @@
 package com.backend.swp.apalary.model.entity;
 
 import com.backend.swp.apalary.model.constant.Role;
+import com.backend.swp.apalary.model.constant.Status;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Date;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "employee")
 @Data
-public class Employee {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Employee implements UserDetails {
     @Id
     @Column
     private String id;
@@ -32,7 +39,10 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     @Column
     private Role role;
-    @Column(nullable = true, name = "manager_id")
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Status status;
+    @Column(name = "manager_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private String managerId;
@@ -43,6 +53,32 @@ public class Employee {
     private Department department;
     @OneToOne
     @JoinColumn(name = "contract_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Contract contract;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
