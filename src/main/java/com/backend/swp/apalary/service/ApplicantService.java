@@ -25,7 +25,7 @@ public class ApplicantService {
     ApplicantRepository applicantRepository;
     final JobOfferingRepository jobOfferingRepository;
     final ModelMapper modelMapper;
-    private static final Logger logger = LogManager.getLogger(JobOfferingService.class);
+    private static final Logger logger = LogManager.getLogger(ApplicantService.class);
     private static final String CREATE_APPLICANT_MESSAGE = "Create applicant: ";
     private static final String GET_APPLICANT_MESSAGE = "Get applicant: ";
 
