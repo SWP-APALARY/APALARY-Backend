@@ -20,7 +20,7 @@ public class EmployeeService {
     EmployeeRepository employeeRepository;
     final
     ModelMapper modelMapper;
-    private static final Logger logger = LogManager.getLogger(JobOfferingService.class);
+    private static final Logger logger = LogManager.getLogger(EmployeeService.class);
     private static final String GET_EMPLOYEE_MESSAGE = "Get employee: ";
     private static final String UPDATE_EMPLOYEE_MESSAGE = "Update employee: ";
     public EmployeeService(EmployeeRepository employeeRepository, ModelMapper modelMapper) {

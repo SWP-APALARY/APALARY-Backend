@@ -1,28 +1,30 @@
 package com.backend.swp.apalary.model.entity;
 
-import com.backend.swp.apalary.model.constant.Role;
 import com.backend.swp.apalary.model.constant.Status;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Date;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 @Entity
-@Table(name = "employee")
 @Data
+@Table(name = "resident")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Employee implements UserDetails {
+public class Resident implements UserDetails {
     @Id
     @Column
     private String id;
-    @Column
+    @Column(unique = true)
     private String username;
     @Column
     private String password;
@@ -30,36 +32,30 @@ public class Employee implements UserDetails {
     private String name;
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
-    @Column
+    @Column(name = "identify_number", unique = true)
     private String identifyNumber;
+    @Column(unique = true)
+    private String email;
     @Column
     private String phone;
+    @Column(name = "apartment_number")
+    private String apartmentNumber;
     @Column
-    private String email;
     @Enumerated(EnumType.STRING)
-    @Column
-    private Role role;
-    @Enumerated(EnumType.STRING)
-    @Column
     private Status status;
-    @Column(name = "manager_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private String managerId;
-    @ManyToOne
-    @JoinColumn(name = "department_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Department department;
-    @OneToOne
-    @JoinColumn(name = "contract_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Contract contract;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return Collections.singleton(new SimpleGrantedAuthority("RESIDENT")) ;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
     }
 
     @Override

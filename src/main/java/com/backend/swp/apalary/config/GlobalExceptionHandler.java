@@ -6,6 +6,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -61,5 +62,9 @@ public class GlobalExceptionHandler {
 //        logger.error("{}: {}", HttpStatus.REQUEST_TIMEOUT.value(), "Token is expired");
 //        return new ResponseEntity<>("Token is expired", HttpStatus.REQUEST_TIMEOUT);
 //    }
-
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<String> handleWrongPassword(BadCredentialsException e) {
+        logger.error("{}: {}", HttpStatus.FORBIDDEN, "Wrong password!");
+        return new ResponseEntity<>("Wrong password!", HttpStatus.FORBIDDEN);
+    }
 }
