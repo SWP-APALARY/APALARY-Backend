@@ -23,7 +23,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setIssuedAt(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
     }
 
@@ -53,9 +53,9 @@ public class JwtService {
     }
     public boolean isValidToken(String token, UserDetails userDetails) {
         String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && isNotExpiredToken(token);
+        return username.equals(userDetails.getUsername()) && !isExpiredToken(token);
     }
-    private boolean isNotExpiredToken(String token) {
+    private boolean isExpiredToken(String token) {
         return extractExpirationDate(token).before(new Date());
     }
     private Key getSignInKey() {
