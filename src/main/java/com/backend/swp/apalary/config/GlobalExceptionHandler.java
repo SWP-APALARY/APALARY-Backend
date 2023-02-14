@@ -2,6 +2,7 @@ package com.backend.swp.apalary.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +65,12 @@ public class GlobalExceptionHandler {
 //    }
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleWrongPassword(BadCredentialsException e) {
-        logger.error("{}: {}", HttpStatus.FORBIDDEN, "Wrong password!");
+        logger.error("{}: {}", HttpStatus.FORBIDDEN.value(), "Wrong password!");
         return new ResponseEntity<>("Wrong password!", HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDuplicateValue(DataIntegrityViolationException e) {
+        logger.info("{}: {}", HttpStatus.BAD_REQUEST.value(), "Duplicate unique value!");
+        return new ResponseEntity<>("Duplicate unique value!", HttpStatus.BAD_REQUEST);
     }
 }
