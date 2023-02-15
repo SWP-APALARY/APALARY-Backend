@@ -1,5 +1,7 @@
 package com.backend.swp.apalary.config;
 
+import com.backend.swp.apalary.model.entity.Employee;
+import com.backend.swp.apalary.model.entity.Resident;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +45,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (userDetails instanceof Employee employee) {
+                    request.setAttribute("userId", employee.getId());
+                    request.setAttribute("userUsername", employee.getUsername());
+                }
+                else if (userDetails instanceof Resident resident) {
+                    request.setAttribute("userId", resident.getId());
+                    request.setAttribute("userUsername", resident.getUsername());
+                }
             }
         }
         filterChain.doFilter(request, response);
