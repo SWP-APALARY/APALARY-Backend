@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Entity
 @Table(name = "employee")
@@ -60,7 +59,7 @@ public class Employee implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(role.name())) ;
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name())) ;
     }
 
     @Override

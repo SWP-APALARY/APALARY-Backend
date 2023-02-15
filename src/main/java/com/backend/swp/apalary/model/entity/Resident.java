@@ -45,7 +45,7 @@ public class Resident implements UserDetails {
     private Status status;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("RESIDENT")) ;
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_RESIDENT")) ;
     }
 
     @Override
