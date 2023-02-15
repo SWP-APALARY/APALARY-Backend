@@ -24,46 +24,49 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http.cors().and()
-//                .csrf()
-//                .disable()
-//                .authorizeHttpRequests()
-//                .requestMatchers("/auth/**")
-//                .permitAll()
-//                .requestMatchers(HttpMethod.POST, "/job-offering/**").hasAnyRole(Role.MANAGER.name(), Role.HR_MANAGER.name())
-//                .requestMatchers(HttpMethod.GET, "/job-offering/**").permitAll()
-//                .requestMatchers("/job-offering/approve/**").hasRole(Role.HR_MANAGER.name())
-//                .requestMatchers("/job-offering/disapprove/**").hasRole(Role.HR_MANAGER.name())
-//                .requestMatchers(HttpMethod.PUT, "/job-offering").hasRole(Role.MANAGER.name())
-//                .requestMatchers(HttpMethod.DELETE, "/job-offering/**").hasAnyRole(Role.MANAGER.name(), Role.HR_MANAGER.name())
-//                .requestMatchers(HttpMethod.GET, "/employee/**").authenticated()
-//                .requestMatchers(HttpMethod.PUT, "/employee").authenticated()
-//                .requestMatchers(HttpMethod.POST, "/applicant/**").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/applicant/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.MANAGER.name())
-//                .requestMatchers(HttpMethod.PUT, "/applicant/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())
-//                .anyRequest().permitAll()
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//                .addFilterBefore(headerSettingFilter, JwtAuthenticationFilter.class)    ;
-//        return http.build();
-        http.cors().and()
-                .csrf().disable()
+        http
+                .cors()
+                .and()
+                .csrf()
+                .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/auth/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.POST, "/job-offering/**").hasAnyRole(Role.MANAGER.name(), Role.HR_MANAGER.name())
                 .requestMatchers(HttpMethod.GET, "/job-offering/**").permitAll()
+                .requestMatchers("/job-offering/approve/**").hasRole(Role.HR_MANAGER.name())
+                .requestMatchers("/job-offering/disapprove/**").hasRole(Role.HR_MANAGER.name())
+                .requestMatchers(HttpMethod.PUT, "/job-offering").hasRole(Role.MANAGER.name())
+                .requestMatchers(HttpMethod.DELETE, "/job-offering/**").hasAnyRole(Role.MANAGER.name(), Role.HR_MANAGER.name())
+                .requestMatchers(HttpMethod.GET, "/employee/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/employee").authenticated()
                 .requestMatchers(HttpMethod.POST, "/applicant/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.GET, "/applicant/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.MANAGER.name())
+                .requestMatchers(HttpMethod.PUT, "/applicant/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())
+                .anyRequest().permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(headerSettingFilter, JwtAuthenticationFilter.class);
+                .addFilterBefore(headerSettingFilter, JwtAuthenticationFilter.class)    ;
         return http.build();
-    }
+
+//        http.cors().and()
+//                .csrf().disable()
+//                .authorizeHttpRequests()
+//                .requestMatchers("/auth/**").permitAll()
+//                .requestMatchers(HttpMethod.GET, "/job-offering/**").permitAll()
+//                .requestMatchers(HttpMethod.POST, "/applicant/**").permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .authenticationProvider(authenticationProvider)
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(headerSettingFilter, JwtAuthenticationFilter.class);
+//        return http.build();
+      }
 }
