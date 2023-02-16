@@ -10,13 +10,12 @@ import com.backend.swp.apalary.service.constant.ServiceMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -33,9 +32,13 @@ public class ApplicantService {
         this.applicantRepository = applicantRepository;
         this.jobOfferingRepository = jobOfferingRepository;
         this.modelMapper = modelMapper;
+        TypeMap<Applicant, ApplicantDTO> propertyMap = this.modelMapper.createTypeMap(Applicant.class, ApplicantDTO.class);
+        propertyMap.addMappings(mapper -> mapper.map(src -> Base64.getEncoder().encode(src.getCv()), ApplicantDTO::setCv));
+        TypeMap<ApplicantDTO, Applicant> anotherPropertyMap = this.modelMapper.createTypeMap(ApplicantDTO.class, Applicant.class);
+        anotherPropertyMap.addMappings(mapper -> mapper.map(src -> Base64.getDecoder().decode(src.getCv()), Applicant::setCv));
     }
 
-    public ResponseEntity<Void> createApplicant(ApplicantDTO applicantDTO, MultipartFile file) throws IOException {
+    public ResponseEntity<Void> createApplicant(ApplicantDTO applicantDTO) {
         logger.info("{}{}", CREATE_APPLICANT_MESSAGE, applicantDTO);
         if (applicantDTO == null) {
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
@@ -48,7 +51,6 @@ public class ApplicantService {
         }
         Applicant applicant = modelMapper.map(applicantDTO, Applicant.class);
         applicant.setId(null);
-        applicant.setCv(file.getBytes());
         applicant.setStatus(Status.PROCESSING);
         applicant.setJobOffering(jobOffering);
         applicantRepository.save(applicant);

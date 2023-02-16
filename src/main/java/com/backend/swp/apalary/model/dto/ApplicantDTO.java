@@ -14,7 +14,7 @@ public class ApplicantDTO {
     private String name;
     private String phone;
     private String email;
-    private byte[] cv;
+    private String cv;
     private Status status;
     private Integer jobOfferingId;
 }
