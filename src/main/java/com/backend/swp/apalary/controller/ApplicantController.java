@@ -4,9 +4,6 @@ import com.backend.swp.apalary.model.dto.ApplicantDTO;
 import com.backend.swp.apalary.service.ApplicantService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,8 +17,8 @@ public class ApplicantController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createApplicant(@RequestBody ApplicantDTO applicantDTO, @RequestParam("file")MultipartFile file) throws IOException {
-        return applicantService.createApplicant(applicantDTO, file);
+    public ResponseEntity<Void> createApplicant(@RequestBody ApplicantDTO applicantDTO){
+        return applicantService.createApplicant(applicantDTO);
     }
     @GetMapping("/{id}")
     public ResponseEntity<ApplicantDTO> getApplicantById(@PathVariable Integer id) {

@@ -1,5 +1,6 @@
 package com.backend.swp.apalary.config;
 
+import com.backend.swp.apalary.config.exception.IdExistException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -65,12 +66,17 @@ public class GlobalExceptionHandler {
 //    }
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleWrongPassword(BadCredentialsException e) {
-        logger.error("{}: {}", HttpStatus.FORBIDDEN.value(), "Wrong password!");
-        return new ResponseEntity<>("Wrong password!", HttpStatus.FORBIDDEN);
+        logger.error("{}: {}", HttpStatus.FORBIDDEN.value(), "Wrong username or password!");
+        return new ResponseEntity<>("Wrong username or password!", HttpStatus.FORBIDDEN);
     }
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDuplicateValue(DataIntegrityViolationException e) {
         logger.info("{}: {}", HttpStatus.BAD_REQUEST.value(), "Duplicate unique value!");
         return new ResponseEntity<>("Duplicate unique value!", HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(IdExistException.class)
+    public ResponseEntity<String> handleIdExist(IdExistException e) {
+        logger.info("{}: {}", HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

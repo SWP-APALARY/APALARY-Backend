@@ -10,13 +10,13 @@ import com.backend.swp.apalary.service.constant.ServiceMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -29,13 +29,14 @@ public class ApplicantService {
     private static final String CREATE_APPLICANT_MESSAGE = "Create applicant: ";
     private static final String GET_APPLICANT_MESSAGE = "Get applicant: ";
 
-    public ApplicantService(ApplicantRepository applicantRepository, JobOfferingRepository jobOfferingRepository, ModelMapper modelMapper) {
+    public ApplicantService(ApplicantRepository applicantRepository, JobOfferingRepository jobOfferingRepository, @Qualifier("applicant") ModelMapper modelMapper) {
         this.applicantRepository = applicantRepository;
         this.jobOfferingRepository = jobOfferingRepository;
         this.modelMapper = modelMapper;
+
     }
 
-    public ResponseEntity<Void> createApplicant(ApplicantDTO applicantDTO, MultipartFile file) throws IOException {
+    public ResponseEntity<Void> createApplicant(ApplicantDTO applicantDTO) {
         logger.info("{}{}", CREATE_APPLICANT_MESSAGE, applicantDTO);
         if (applicantDTO == null) {
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
@@ -48,8 +49,8 @@ public class ApplicantService {
         }
         Applicant applicant = modelMapper.map(applicantDTO, Applicant.class);
         applicant.setId(null);
-        applicant.setCv(file.getBytes());
         applicant.setStatus(Status.PROCESSING);
+        applicant.setCv(Base64.getDecoder().decode(applicantDTO.getCv()));
         applicant.setJobOffering(jobOffering);
         applicantRepository.save(applicant);
         logger.info("Applicant register successfully.");
@@ -60,7 +61,12 @@ public class ApplicantService {
     public ResponseEntity<List<ApplicantDTO>> getAllApplicant() {
         logger.info("{}{}", GET_APPLICANT_MESSAGE, "all");
         List<Applicant> applicants = applicantRepository.findApplicantByStatus(Status.PROCESSING);
-        List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantDTO.class)).toList();
+        List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> {
+            ApplicantDTO dto = modelMapper.map(applicant, ApplicantDTO.class);
+            dto.setCv(Base64.getEncoder().encodeToString(applicant.getCv()));
+            return  dto;
+        }
+        ).toList();
         logger.info("Get all applicants successfully.");
         return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
     }
@@ -78,7 +84,12 @@ public class ApplicantService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         List<Applicant> applicants = applicantRepository.findApplicantByStatusAndJobOffering(Status.PROCESSING, jobOffering);
-        List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantDTO.class)).toList();
+        List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> {
+                    ApplicantDTO dto = modelMapper.map(applicant, ApplicantDTO.class);
+                    dto.setCv(Base64.getEncoder().encodeToString(applicant.getCv()));
+                    return  dto;
+                }
+        ).toList();
         logger.info("Get all applicants of a job offering id {} successfully.", jobOfferingId);
         return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
     }
@@ -95,6 +106,7 @@ public class ApplicantService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         ApplicantDTO applicantDTO = modelMapper.map(applicant, ApplicantDTO.class);
+        applicantDTO.setCv(Base64.getEncoder().encodeToString(applicant.getCv()));
         logger.info("{}{} successfully", GET_APPLICANT_MESSAGE, id);
         return new ResponseEntity<>(applicantDTO, HttpStatus.OK);
     }
