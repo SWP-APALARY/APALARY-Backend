@@ -19,5 +19,6 @@ public class JobOfferingDTO {
     private Status status;
     private Integer maxEmployee;
     private Integer departmentId;
+    private String departmentName;
     private String employeeId;
 }
