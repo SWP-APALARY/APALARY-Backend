@@ -10,11 +10,12 @@ import com.backend.swp.apalary.service.constant.ServiceMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Base64;
 import java.util.List;
 
@@ -28,14 +29,11 @@ public class ApplicantService {
     private static final String CREATE_APPLICANT_MESSAGE = "Create applicant: ";
     private static final String GET_APPLICANT_MESSAGE = "Get applicant: ";
 
-    public ApplicantService(ApplicantRepository applicantRepository, JobOfferingRepository jobOfferingRepository, ModelMapper modelMapper) {
+    public ApplicantService(ApplicantRepository applicantRepository, JobOfferingRepository jobOfferingRepository, @Qualifier("applicant") ModelMapper modelMapper) {
         this.applicantRepository = applicantRepository;
         this.jobOfferingRepository = jobOfferingRepository;
         this.modelMapper = modelMapper;
-        TypeMap<Applicant, ApplicantDTO> propertyMap = this.modelMapper.createTypeMap(Applicant.class, ApplicantDTO.class);
-        propertyMap.addMappings(mapper -> mapper.map(src -> Base64.getEncoder().encode(src.getCv()), ApplicantDTO::setCv));
-        TypeMap<ApplicantDTO, Applicant> anotherPropertyMap = this.modelMapper.createTypeMap(ApplicantDTO.class, Applicant.class);
-        anotherPropertyMap.addMappings(mapper -> mapper.map(src -> Base64.getDecoder().decode(src.getCv()), Applicant::setCv));
+
     }
 
     public ResponseEntity<Void> createApplicant(ApplicantDTO applicantDTO) {
@@ -52,6 +50,7 @@ public class ApplicantService {
         Applicant applicant = modelMapper.map(applicantDTO, Applicant.class);
         applicant.setId(null);
         applicant.setStatus(Status.PROCESSING);
+        applicant.setCv(Base64.getDecoder().decode(applicantDTO.getCv()));
         applicant.setJobOffering(jobOffering);
         applicantRepository.save(applicant);
         logger.info("Applicant register successfully.");
@@ -62,7 +61,12 @@ public class ApplicantService {
     public ResponseEntity<List<ApplicantDTO>> getAllApplicant() {
         logger.info("{}{}", GET_APPLICANT_MESSAGE, "all");
         List<Applicant> applicants = applicantRepository.findApplicantByStatus(Status.PROCESSING);
-        List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantDTO.class)).toList();
+        List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> {
+            ApplicantDTO dto = modelMapper.map(applicant, ApplicantDTO.class);
+            dto.setCv(Base64.getEncoder().encodeToString(applicant.getCv()));
+            return  dto;
+        }
+        ).toList();
         logger.info("Get all applicants successfully.");
         return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
     }
@@ -80,7 +84,12 @@ public class ApplicantService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         List<Applicant> applicants = applicantRepository.findApplicantByStatusAndJobOffering(Status.PROCESSING, jobOffering);
-        List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantDTO.class)).toList();
+        List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> {
+                    ApplicantDTO dto = modelMapper.map(applicant, ApplicantDTO.class);
+                    dto.setCv(Base64.getEncoder().encodeToString(applicant.getCv()));
+                    return  dto;
+                }
+        ).toList();
         logger.info("Get all applicants of a job offering id {} successfully.", jobOfferingId);
         return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
     }
@@ -97,6 +106,7 @@ public class ApplicantService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         ApplicantDTO applicantDTO = modelMapper.map(applicant, ApplicantDTO.class);
+        applicantDTO.setCv(Base64.getEncoder().encodeToString(applicant.getCv()));
         logger.info("{}{} successfully", GET_APPLICANT_MESSAGE, id);
         return new ResponseEntity<>(applicantDTO, HttpStatus.OK);
     }
