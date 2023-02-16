@@ -1,6 +1,5 @@
 package com.backend.swp.apalary.model.response;
 
-import com.backend.swp.apalary.model.constant.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
+public class AuthResponse {
     private String token;
-    private Role role;
+    private String role;
 }
