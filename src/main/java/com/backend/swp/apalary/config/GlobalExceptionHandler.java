@@ -1,6 +1,7 @@
 package com.backend.swp.apalary.config;
 
 import com.backend.swp.apalary.config.exception.IdExistException;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -59,11 +60,6 @@ public class GlobalExceptionHandler {
         logger.error("{}: {}", HttpStatus.INTERNAL_SERVER_ERROR.value(), "IO Exception");
         return new ResponseEntity<>("IO Exception", HttpStatus.INTERNAL_SERVER_ERROR);
     }
-//    @ExceptionHandler(ExpiredJwtException.class)
-//    public ResponseEntity<String> handleExpiredJwtException(ExpiredJwtException e) {
-//        logger.error("{}: {}", HttpStatus.REQUEST_TIMEOUT.value(), "Token is expired");
-//        return new ResponseEntity<>("Token is expired", HttpStatus.REQUEST_TIMEOUT);
-//    }
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleWrongPassword(BadCredentialsException e) {
         logger.error("{}: {}", HttpStatus.FORBIDDEN.value(), "Wrong username or password!");
@@ -78,5 +74,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleIdExist(IdExistException e) {
         logger.info("{}: {}", HttpStatus.BAD_REQUEST.value(), e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<String> handleJwtExpired(ExpiredJwtException e) {
+        logger.info("{}: {}", HttpStatus.FORBIDDEN.value(), "Jwt token is expired");
+        return new ResponseEntity<>("Jwt token is expired", HttpStatus.FORBIDDEN);
     }
 }

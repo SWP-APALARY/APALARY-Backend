@@ -8,18 +8,20 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "contract_type")
-@Data
+@Table(name = "rule_salary")
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContractType {
+@Data
+public class RuleSalary {
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "rule_number")
+    private Integer ruleNumber;
     @Column
-    private String type;
-    @OneToMany(mappedBy = "contractType", fetch = FetchType.LAZY)
+    private String description;
+    @Column
+    private int point;
+    @ManyToMany(mappedBy = "ruleSalaries", fetch = FetchType.LAZY)
     private List<Contract> contracts;
 
 }
