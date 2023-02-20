@@ -26,6 +26,8 @@ public class Applicant {
     @Lob
     private byte[] cv;
     @Column
+    private int gender;
+    @Column
     @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToOne

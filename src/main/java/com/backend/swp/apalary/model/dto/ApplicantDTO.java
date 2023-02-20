@@ -15,6 +15,7 @@ public class ApplicantDTO {
     private String phone;
     private String email;
     private String cv;
+    private int gender;
     private Status status;
     private Integer jobOfferingId;
 }
