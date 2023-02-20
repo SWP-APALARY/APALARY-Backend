@@ -1,5 +1,6 @@
 package com.backend.swp.apalary.service;
 
+import com.backend.swp.apalary.model.constant.Status;
 import com.backend.swp.apalary.model.dto.EmployeeDTO;
 import com.backend.swp.apalary.model.entity.Employee;
 import com.backend.swp.apalary.repository.EmployeeRepository;
@@ -34,7 +35,7 @@ public class EmployeeService {
             logger.warn("{}" , ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Employee employee = employeeRepository.findEmployeeById(id);
+        Employee employee = employeeRepository.findEmployeeByIdAndStatus(id, Status.ACTIVE);
         if (employee == null) {
             logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -63,7 +64,7 @@ public class EmployeeService {
             logger.warn("{}" , ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Employee employee = employeeRepository.findEmployeeById(employeeDTO.getId());
+        Employee employee = employeeRepository.findEmployeeByIdAndStatus(employeeDTO.getId(), Status.ACTIVE);
         if (employee == null) {
             logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

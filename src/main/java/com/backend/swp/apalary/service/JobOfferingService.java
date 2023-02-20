@@ -50,7 +50,7 @@ public class JobOfferingService {
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Employee employee = employeeRepository.findEmployeeById(jobOfferingDTO.getEmployeeId());
+        Employee employee = employeeRepository.findEmployeeByIdAndStatus(jobOfferingDTO.getEmployeeId(), Status.ACTIVE);
         if (employee == null) {
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -178,7 +178,7 @@ public class JobOfferingService {
             jobOffering.setDepartment(department);
         }
         if (jobOfferingDTO.getEmployeeId() != null) {
-            Employee employee = employeeRepository.findEmployeeById(jobOfferingDTO.getEmployeeId());
+            Employee employee = employeeRepository.findEmployeeByIdAndStatus(jobOfferingDTO.getEmployeeId(), Status.ACTIVE);
             if (employee == null) {
                 logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
