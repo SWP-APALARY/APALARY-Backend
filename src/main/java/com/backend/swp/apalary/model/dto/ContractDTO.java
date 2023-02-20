@@ -18,5 +18,7 @@ public class ContractDTO {
     private Date signedDate;
     private Date startDate;
     private Date endDate;
+    private String contractImage;
     private Integer contractTypeId;
+    private int[] ruleSalaryRuleNumbers;
 }

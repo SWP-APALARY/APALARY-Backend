@@ -2,10 +2,15 @@ package com.backend.swp.apalary.model.entity;
 
 import com.backend.swp.apalary.model.constant.Status;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Table(name = "applicant")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Applicant {
     @Id
     @Column
@@ -20,6 +25,8 @@ public class Applicant {
     @Column
     @Lob
     private byte[] cv;
+    @Column
+    private int gender;
     @Column
     @Enumerated(EnumType.STRING)
     private Status status;

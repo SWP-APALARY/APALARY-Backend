@@ -39,7 +39,7 @@ public class AuthService {
     private static final String CREATE_RESIDENT_MESSAGE = "Create resident: ";
     public ResponseEntity<AuthResponse> createEmployee(CreateEmployeeRequest employeeDTO) throws IdExistException {
         logger.info("{}{}",CREATE_EMPLOYEE_MESSAGE, employeeDTO.getUsername());
-        Contract contract = contractRepository.findContractById(employeeDTO.getContractId());
+        Contract contract = contractRepository.findContractByIdAndStatus(employeeDTO.getContractId(), Status.ACTIVE);
         if (contract == null) {
             logger.warn(ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -78,8 +78,8 @@ public class AuthService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword())
         );
-        Employee employee = employeeRepository.findEmployeeByUsername(userLogin.getUsername());
-        UserDetails userDetails = employee != null ? employee : residentRepository.findResidentByUsername(userLogin.getUsername());
+        Employee employee = employeeRepository.findEmployeeByUsernameAndStatus(userLogin.getUsername(), Status.ACTIVE);
+        UserDetails userDetails = employee != null ? employee : residentRepository.findResidentByUsernameAndStatus(userLogin.getUsername(), Status.ACTIVE);
         if (userDetails == null) {
             logger.warn(ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
