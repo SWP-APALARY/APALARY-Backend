@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ContractTypeRepository extends JpaRepository<ContractType, Integer> {
-    
+    ContractType findContractTypeById(Integer id);
 }

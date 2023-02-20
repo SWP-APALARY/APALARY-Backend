@@ -1,5 +1,6 @@
 package com.backend.swp.apalary.model.entity;
 
+import com.backend.swp.apalary.model.constant.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +33,8 @@ public class Contract {
     @Column(name = "contract_image")
     @Lob
     private byte[] contractImage;
+    @Enumerated(EnumType.STRING)
+    private Status status;
     @ManyToOne
     @JoinColumn(name = "contract_type_id")
     @ToString.Exclude
