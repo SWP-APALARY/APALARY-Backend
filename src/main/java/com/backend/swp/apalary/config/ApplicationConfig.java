@@ -1,5 +1,6 @@
 package com.backend.swp.apalary.config;
 
+import com.backend.swp.apalary.model.constant.Status;
 import com.backend.swp.apalary.model.entity.Employee;
 import com.backend.swp.apalary.model.entity.Resident;
 import com.backend.swp.apalary.repository.EmployeeRepository;
@@ -25,11 +26,11 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            Employee employee = employeeRepository.findEmployeeByUsername(username);
+            Employee employee = employeeRepository.findEmployeeByUsernameAndStatus(username, Status.ACTIVE);
             if (employee != null) {
                 return employee;
             }
-            Resident resident = residentRepository.findResidentByUsername(username);
+            Resident resident = residentRepository.findResidentByUsernameAndStatus(username, Status.ACTIVE);
             if (resident != null) {
                 return resident;
             }
