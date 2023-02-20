@@ -38,12 +38,15 @@ public class WebConfiguration implements WebMvcConfigurer {
         ModelMapper mapper = new ModelMapper();
         TypeMap<ContractDTO, Contract> propertyMap = mapper.createTypeMap(ContractDTO.class, Contract.class);
         propertyMap.addMappings(mp -> mp.skip(Contract::setRuleSalaries));
+        propertyMap.addMappings(mp -> mp.skip(Contract::setContractImage));
+        TypeMap<Contract, ContractDTO> anotherPropertyMap = mapper.createTypeMap(Contract.class, ContractDTO.class);
+        anotherPropertyMap.addMappings(mp -> mp.skip(ContractDTO::setContractImage));
         return mapper;
     }
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://be.binhdt.dev"));
+        configuration.setAllowedOrigins(Arrays.asList("https://be.binhdt.dev", "http://be.binhdt.dev", "http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
