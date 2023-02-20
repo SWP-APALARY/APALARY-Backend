@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.CorsFilter;
 
 
 @Configuration
@@ -41,6 +42,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/applicant/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/applicant/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.MANAGER.name())
                 .requestMatchers(HttpMethod.PUT, "/applicant/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())
+                .requestMatchers(HttpMethod.POST, "/contract").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())
+                .requestMatchers(HttpMethod.GET, "/contract/all", "/contract/{id:\\d+}", "contract/rules-salary").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.MANAGER.name())
+                .requestMatchers(HttpMethod.GET, "/contract").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/contract/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement()
@@ -48,7 +53,7 @@ public class SecurityConfig {
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(headerSettingFilter, JwtAuthenticationFilter.class)    ;
+                .addFilterBefore(headerSettingFilter, CorsFilter.class);
         return http.build();
 
 //        http.cors().and()
