@@ -34,6 +34,7 @@ public class ApplicantServiceImpl implements com.backend.swp.apalary.service.App
 
     }
 
+    @Override
     public ResponseEntity<Void> createApplicant(ApplicantDTO applicantDTO) {
         logger.info("{}{}", CREATE_APPLICANT_MESSAGE, applicantDTO);
         if (applicantDTO == null) {
@@ -54,6 +55,7 @@ public class ApplicantServiceImpl implements com.backend.swp.apalary.service.App
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
     @Transactional
     public ResponseEntity<List<ApplicantDTO>> getAllApplicant() {
         logger.info("{}{}", GET_APPLICANT_MESSAGE, "all");
@@ -63,7 +65,7 @@ public class ApplicantServiceImpl implements com.backend.swp.apalary.service.App
         logger.info("Get all applicants successfully.");
         return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
     }
-
+    @Override
     @Transactional
     public ResponseEntity<List<ApplicantDTO>> getAllApplicantOfAJobOffering(Integer jobOfferingId) {
         logger.info("{}Job Offering id: {}", GET_APPLICANT_MESSAGE, jobOfferingId);
@@ -83,6 +85,7 @@ public class ApplicantServiceImpl implements com.backend.swp.apalary.service.App
         return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
     }
 
+    @Override
     public ResponseEntity<ApplicantDTO> getApplicantById(Integer id) {
         logger.info("{}{}", GET_APPLICANT_MESSAGE, id);
         if (id == null) {
@@ -98,6 +101,8 @@ public class ApplicantServiceImpl implements com.backend.swp.apalary.service.App
         logger.info("{}{} successfully", GET_APPLICANT_MESSAGE, id);
         return new ResponseEntity<>(applicantDTO, HttpStatus.OK);
     }
+
+    @Override
     public ResponseEntity<Void> acceptApplicant(Integer id, boolean isAccepted) {
         if (isAccepted) logger.info("Accept applicant id: {}", id);
         else logger.info("Reject applicant id: {}", id);

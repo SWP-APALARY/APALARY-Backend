@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/contract/all", "/contract/{id:\\d+}", "contract/rules-salary").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.MANAGER.name())
                 .requestMatchers(HttpMethod.GET, "/contract").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/contract/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())
+                .requestMatchers(HttpMethod.GET, "/department/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement()
