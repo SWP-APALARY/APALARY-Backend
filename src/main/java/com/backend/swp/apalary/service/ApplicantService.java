@@ -10,13 +10,11 @@ import com.backend.swp.apalary.service.constant.ServiceMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -29,7 +27,7 @@ public class ApplicantService {
     private static final String CREATE_APPLICANT_MESSAGE = "Create applicant: ";
     private static final String GET_APPLICANT_MESSAGE = "Get applicant: ";
 
-    public ApplicantService(ApplicantRepository applicantRepository, JobOfferingRepository jobOfferingRepository, @Qualifier("applicant") ModelMapper modelMapper) {
+    public ApplicantService(ApplicantRepository applicantRepository, JobOfferingRepository jobOfferingRepository, ModelMapper modelMapper) {
         this.applicantRepository = applicantRepository;
         this.jobOfferingRepository = jobOfferingRepository;
         this.modelMapper = modelMapper;
@@ -50,7 +48,6 @@ public class ApplicantService {
         Applicant applicant = modelMapper.map(applicantDTO, Applicant.class);
         applicant.setId(null);
         applicant.setStatus(Status.PROCESSING);
-        applicant.setCv(Base64.getDecoder().decode(applicantDTO.getCv()));
         applicant.setJobOffering(jobOffering);
         applicantRepository.save(applicant);
         logger.info("Applicant register successfully.");
@@ -63,7 +60,6 @@ public class ApplicantService {
         List<Applicant> applicants = applicantRepository.findApplicantByStatus(Status.PROCESSING);
         List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> {
             ApplicantDTO dto = modelMapper.map(applicant, ApplicantDTO.class);
-            dto.setCv(Base64.getEncoder().encodeToString(applicant.getCv()));
             return  dto;
         }
         ).toList();
@@ -86,7 +82,6 @@ public class ApplicantService {
         List<Applicant> applicants = applicantRepository.findApplicantByStatusAndJobOffering(Status.PROCESSING, jobOffering);
         List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> {
                     ApplicantDTO dto = modelMapper.map(applicant, ApplicantDTO.class);
-                    dto.setCv(Base64.getEncoder().encodeToString(applicant.getCv()));
                     return  dto;
                 }
         ).toList();
@@ -106,7 +101,6 @@ public class ApplicantService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         ApplicantDTO applicantDTO = modelMapper.map(applicant, ApplicantDTO.class);
-        applicantDTO.setCv(Base64.getEncoder().encodeToString(applicant.getCv()));
         logger.info("{}{} successfully", GET_APPLICANT_MESSAGE, id);
         return new ResponseEntity<>(applicantDTO, HttpStatus.OK);
     }

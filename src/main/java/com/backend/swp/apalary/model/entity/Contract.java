@@ -31,8 +31,7 @@ public class Contract {
     @Column(name = "end_date")
     private Date endDate;
     @Column(name = "contract_image")
-    @Lob
-    private byte[] contractImage;
+    private String contractImage;
     @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToOne

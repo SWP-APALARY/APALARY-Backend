@@ -15,13 +15,12 @@ import com.backend.swp.apalary.service.constant.ServiceMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,7 +35,7 @@ public class ContractService {
     private static final String GET_CONTRACT_MESSAGE = "Get contract: ";
     private static final String DELETE_CONTRACT_MESSAGE = "Delete contract: ";
 
-    public ContractService(ContractRepository contractRepository, EmployeeRepository employeeRepository, ContractTypeRepository contractTypeRepository, RuleSalaryRepository ruleSalaryRepository, @Qualifier("contract") ModelMapper modelMapper) {
+    public ContractService(ContractRepository contractRepository, EmployeeRepository employeeRepository, ContractTypeRepository contractTypeRepository, RuleSalaryRepository ruleSalaryRepository, ModelMapper modelMapper) {
         this.contractRepository = contractRepository;
         this.employeeRepository = employeeRepository;
         this.contractTypeRepository = contractTypeRepository;
@@ -57,9 +56,9 @@ public class ContractService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Contract contract = modelMapper.map(contractDTO, Contract.class);
-        contract.setContractImage(Base64.getDecoder().decode(contractDTO.getContractImage()));
         contract.setStatus(Status.ACTIVE);
         contract.setContractType(contractType);
+        contract.setRuleSalaries(new ArrayList<>());
         for (int ruleNumber : contractDTO.getRuleSalaryRuleNumbers()) {
             RuleSalary ruleSalary = ruleSalaryRepository.findRuleSalaryByRuleNumber(ruleNumber);
             if (ruleSalary == null) {
@@ -80,7 +79,6 @@ public class ContractService {
         List<Contract> contracts = contractRepository.findContractByStatus(Status.ACTIVE);
         List<ContractDTO> contractDTOS = contracts.stream().map(contract -> {
             ContractDTO dto = modelMapper.map(contract, ContractDTO.class);
-            dto.setContractImage(Base64.getEncoder().encodeToString(contract.getContractImage()));
             return dto;
         }).toList();
         logger.info("Get all contracts successfully.");
@@ -98,7 +96,6 @@ public class ContractService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         ContractDTO contractDTO = modelMapper.map(contract, ContractDTO.class);
-        contractDTO.setContractImage(Base64.getEncoder().encodeToString(contract.getContractImage()));
         logger.info("Get contract by id {} successfully.", id);
         return new ResponseEntity<>(contractDTO, HttpStatus.OK);
     }
@@ -135,7 +132,6 @@ public class ContractService {
 
         Contract contract = contractRepository.findContractByEmployeeAndStatus(employee, Status.ACTIVE);
         ContractDTO dto = modelMapper.map(contract, ContractDTO.class);
-        dto.setContractImage(Base64.getEncoder().encodeToString(contract.getContractImage()));
         logger.info("Get contract of user {} successfully.", userId);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }

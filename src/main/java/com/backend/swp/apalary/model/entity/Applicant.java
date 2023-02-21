@@ -23,8 +23,7 @@ public class Applicant {
     @Column
     private String email;
     @Column
-    @Lob
-    private byte[] cv;
+    private String cv;
     @Column
     private int gender;
     @Column
