@@ -28,22 +28,6 @@ public class JobOfferingController {
     public ResponseEntity<JobOfferingDTO> getJobOfferingById(@PathVariable Integer id) {
         return jobOfferingService.getJobOfferingById(id);
     }
-    @PutMapping("/approve/all")
-    public ResponseEntity<Void> approveAll() {
-        return jobOfferingService.approveAll();
-    }
-    @PutMapping("/approve/{id}")
-    public ResponseEntity<Void> approveJobOfferingById(@PathVariable Integer id) {
-        return jobOfferingService.approveJobOffering(id);
-    }
-    @PutMapping("/disapprove/all")
-    public ResponseEntity<Void> disapproveAll() {
-        return jobOfferingService.disApproveAll();
-    }
-    @PutMapping("/disapprove/{id}")
-    public ResponseEntity<Void> disApproveJobOfferingById(@PathVariable Integer id) {
-        return jobOfferingService.disApproveJobOffering(id);
-    }
     @PutMapping
     public ResponseEntity<Void> updateJobOfferingById(@RequestBody JobOfferingDTO jobOfferingDTO) {
         return jobOfferingService.updateJobOffering(jobOfferingDTO);

@@ -27,8 +27,6 @@ public class JobOfferingService {
     final ModelMapper modelMapper;
     private static final Logger logger = LogManager.getLogger(JobOfferingService.class);
     private final static String CREATE_JOB_OFFERING_MESSAGE = "Create job offering: ";
-    private final static String APPROVE_JOB_OFFERING_MESSAGE = "Approve job offering: ";
-    private final static String DISAPPROVE_JOB_OFFERING_MESSAGE = "Disapprove job offering: ";
     private final static String GET_JOB_OFFERING_MESSAGE = "Get job offering: ";
     private final static String UPDATE_JOB_OFFERING_MESSAGE = "Update job offering: ";
     private final static String DELETE_JOB_OFFERING_MESSAGE = "Delete job offering: ";
@@ -57,7 +55,7 @@ public class JobOfferingService {
         }
         JobOffering jobOffering = modelMapper.map(jobOfferingDTO, JobOffering.class);
         jobOffering.setId(null);
-        jobOffering.setStatus(Status.PROCESSING);
+        jobOffering.setStatus(Status.ACTIVE);
         jobOffering.setDepartment(department);
         jobOffering.setEmployee(employee);
         jobOfferingRepository.save(jobOffering);
@@ -65,56 +63,7 @@ public class JobOfferingService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> approveJobOffering(Integer id) {
-        logger.info("{}{}", APPROVE_JOB_OFFERING_MESSAGE, id);
-        if (id == null) {
-            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        JobOffering jobOffering = jobOfferingRepository.findJobOfferingByIdAndStatus(id, Status.PROCESSING);
-        if (jobOffering == null) {
-            logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        jobOffering.setStatus(Status.ACTIVE);
-        jobOfferingRepository.save(jobOffering);
-        logger.info("{}{}", APPROVE_JOB_OFFERING_MESSAGE, "successfully");
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-    public ResponseEntity<Void> disApproveJobOffering(Integer id) {
-        logger.info("{}{}", DISAPPROVE_JOB_OFFERING_MESSAGE, id);
-        if (id == null) {
-            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        JobOffering jobOffering = jobOfferingRepository.findJobOfferingByIdAndStatus(id, Status.PROCESSING);
-        if (jobOffering == null) {
-            logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        jobOffering.setStatus(Status.INACTIVE);
-        jobOfferingRepository.save(jobOffering);
-        logger.info("{}{}", DISAPPROVE_JOB_OFFERING_MESSAGE, "successfully");
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
-    @Transactional
-    public ResponseEntity<Void> approveAll() {
-        logger.info("{}{}", APPROVE_JOB_OFFERING_MESSAGE, "all");
-        List<JobOffering> jobOfferings = jobOfferingRepository.findJobOfferingByStatus(Status.PROCESSING);
-        jobOfferings.forEach(jobOffering -> jobOffering.setStatus(Status.ACTIVE));
-        logger.info("Approve all job offering successfully.");
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Transactional
-    public ResponseEntity<Void> disApproveAll() {
-        logger.info("{}{}", DISAPPROVE_JOB_OFFERING_MESSAGE, "all");
-        List<JobOffering> jobOfferings = jobOfferingRepository.findJobOfferingByStatus(Status.PROCESSING);
-        jobOfferings.forEach(jobOffering -> jobOffering.setStatus(Status.INACTIVE));
-        logger.info("Approve all job offering successfully.");
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
     @Transactional
     public ResponseEntity<List<JobOfferingDTO>> getAllJobOfferings() {
         logger.info("{}{}", GET_JOB_OFFERING_MESSAGE, "all");
