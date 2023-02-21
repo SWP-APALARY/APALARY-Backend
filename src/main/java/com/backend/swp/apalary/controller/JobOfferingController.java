@@ -1,6 +1,7 @@
 package com.backend.swp.apalary.controller;
 
 import com.backend.swp.apalary.model.dto.JobOfferingDTO;
+import com.backend.swp.apalary.service.Impl.JobOfferingServiceImpl;
 import com.backend.swp.apalary.service.JobOfferingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import java.util.List;
 public class JobOfferingController {
     final JobOfferingService jobOfferingService;
 
-    public JobOfferingController(JobOfferingService jobOfferingService) {
+    public JobOfferingController(JobOfferingServiceImpl jobOfferingService) {
         this.jobOfferingService = jobOfferingService;
     }
 
