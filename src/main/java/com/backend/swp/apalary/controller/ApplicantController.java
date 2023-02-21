@@ -2,6 +2,7 @@ package com.backend.swp.apalary.controller;
 
 import com.backend.swp.apalary.model.dto.ApplicantDTO;
 import com.backend.swp.apalary.service.ApplicantService;
+import com.backend.swp.apalary.service.Impl.ApplicantServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -12,7 +13,7 @@ public class ApplicantController {
     final
     ApplicantService applicantService;
 
-    public ApplicantController(ApplicantService applicantService) {
+    public ApplicantController(ApplicantServiceImpl applicantService) {
         this.applicantService = applicantService;
     }
 

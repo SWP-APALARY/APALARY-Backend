@@ -2,6 +2,7 @@ package com.backend.swp.apalary.controller;
 
 import com.backend.swp.apalary.model.dto.EmployeeDTO;
 import com.backend.swp.apalary.service.EmployeeService;
+import com.backend.swp.apalary.service.Impl.EmployeeServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ public class EmployeeController {
     final
     EmployeeService employeeService;
 
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeServiceImpl employeeService) {
         this.employeeService = employeeService;
     }
 
