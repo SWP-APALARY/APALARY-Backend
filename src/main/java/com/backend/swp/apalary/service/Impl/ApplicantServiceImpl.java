@@ -4,8 +4,10 @@ import com.backend.swp.apalary.model.constant.Status;
 import com.backend.swp.apalary.model.dto.ApplicantDTO;
 import com.backend.swp.apalary.model.entity.Applicant;
 import com.backend.swp.apalary.model.entity.JobOffering;
+import com.backend.swp.apalary.model.response.ApplicantResponseInList;
 import com.backend.swp.apalary.repository.ApplicantRepository;
 import com.backend.swp.apalary.repository.JobOfferingRepository;
+import com.backend.swp.apalary.service.ApplicantService;
 import com.backend.swp.apalary.service.constant.ServiceMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class ApplicantServiceImpl implements com.backend.swp.apalary.service.ApplicantService {
+public class ApplicantServiceImpl implements ApplicantService {
     final
     ApplicantRepository applicantRepository;
     final JobOfferingRepository jobOfferingRepository;
@@ -57,17 +59,18 @@ public class ApplicantServiceImpl implements com.backend.swp.apalary.service.App
 
     @Override
     @Transactional
-    public ResponseEntity<List<ApplicantDTO>> getAllApplicant() {
+    public ResponseEntity<List<ApplicantResponseInList>> getAllProcessingApplicant() {
         logger.info("{}{}", GET_APPLICANT_MESSAGE, "all");
         List<Applicant> applicants = applicantRepository.findApplicantByStatus(Status.PROCESSING);
-        List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantDTO.class)
+        List<ApplicantResponseInList> applicantDTOS = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantResponseInList.class)
         ).toList();
         logger.info("Get all applicants successfully.");
         return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
     }
+
     @Override
     @Transactional
-    public ResponseEntity<List<ApplicantDTO>> getAllApplicantOfAJobOffering(Integer jobOfferingId) {
+    public ResponseEntity<List<ApplicantResponseInList>> getAllApplicantOfAJobOffering(Integer jobOfferingId) {
         logger.info("{}Job Offering id: {}", GET_APPLICANT_MESSAGE, jobOfferingId);
         if (jobOfferingId == null) {
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
@@ -79,7 +82,7 @@ public class ApplicantServiceImpl implements com.backend.swp.apalary.service.App
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         List<Applicant> applicants = applicantRepository.findApplicantByStatusAndJobOffering(Status.PROCESSING, jobOffering);
-        List<ApplicantDTO> applicantDTOS = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantDTO.class)
+        List<ApplicantResponseInList> applicantDTOS = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantResponseInList.class)
         ).toList();
         logger.info("Get all applicants of a job offering id {} successfully.", jobOfferingId);
         return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
@@ -92,7 +95,7 @@ public class ApplicantServiceImpl implements com.backend.swp.apalary.service.App
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Applicant applicant = applicantRepository.findApplicantByIdAndStatus(id, Status.PROCESSING);
+        Applicant applicant = applicantRepository.findApplicantById(id);
         if (applicant == null) {
             logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -102,6 +105,26 @@ public class ApplicantServiceImpl implements com.backend.swp.apalary.service.App
         return new ResponseEntity<>(applicantDTO, HttpStatus.OK);
     }
 
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicantResponseInList>> getAcceptedApplicant() {
+        logger.info("{}{}", GET_APPLICANT_MESSAGE, "all accepted applicant");
+        List<Applicant> applicants = applicantRepository.findApplicantByStatus(Status.ACTIVE);
+        List<ApplicantResponseInList> applicantDTOS = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantResponseInList.class)
+        ).toList();
+        logger.info("Get all accepted applicants successfully.");
+        return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
+    }
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicantResponseInList>> getRejectedApplicant() {
+        logger.info("{}{}", GET_APPLICANT_MESSAGE, "all rejected applicant");
+        List<Applicant> applicants = applicantRepository.findApplicantByStatus(Status.INACTIVE);
+        List<ApplicantResponseInList> applicantDTOS = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantResponseInList.class)
+        ).toList();
+        logger.info("Get all rejected applicants successfully.");
+        return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
+    }
     @Override
     public ResponseEntity<Void> acceptApplicant(Integer id, boolean isAccepted) {
         if (isAccepted) logger.info("Accept applicant id: {}", id);
@@ -127,6 +150,8 @@ public class ApplicantServiceImpl implements com.backend.swp.apalary.service.App
         logger.info("Successful.");
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 
 
 }
