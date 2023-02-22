@@ -18,4 +18,5 @@ public class ApplicantDTO {
     private int gender;
     private Status status;
     private Integer jobOfferingId;
+    private String jobOfferingDepartmentName;
 }
