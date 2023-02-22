@@ -9,7 +9,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "contract")
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Contract {
@@ -36,8 +37,6 @@ public class Contract {
     private Status status;
     @ManyToOne
     @JoinColumn(name = "contract_type_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private ContractType contractType;
     @OneToOne(mappedBy = "contract")
     private Employee employee;

@@ -121,8 +121,9 @@ public class JobOfferingServiceImpl implements com.backend.swp.apalary.service.J
             jobOffering.setMaxEmployee(jobOfferingDTO.getMaxEmployee());
         }
         if (jobOfferingDTO.getDepartmentId() != null) {
-            Department department = departmentRepository.findDepartmentById(jobOfferingDTO.getId());
+            Department department = departmentRepository.findDepartmentById(jobOfferingDTO.getDepartmentId());
             if (department == null) {
+                System.out.println(3);
                 logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
