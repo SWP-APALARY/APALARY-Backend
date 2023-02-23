@@ -7,6 +7,7 @@ import com.backend.swp.apalary.model.entity.Contract;
 import com.backend.swp.apalary.model.entity.ContractType;
 import com.backend.swp.apalary.model.entity.Employee;
 import com.backend.swp.apalary.model.entity.RuleSalary;
+import com.backend.swp.apalary.model.response.ContractResponseInList;
 import com.backend.swp.apalary.repository.ContractRepository;
 import com.backend.swp.apalary.repository.ContractTypeRepository;
 import com.backend.swp.apalary.repository.EmployeeRepository;
@@ -75,10 +76,10 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
     }
     @Override
     @Transactional
-    public ResponseEntity<List<ContractDTO>> getAllContract() {
+    public ResponseEntity<List<ContractResponseInList>> getAllContract() {
         logger.info("{}{}", GET_CONTRACT_MESSAGE, "all");
         List<Contract> contracts = contractRepository.findContractByStatus(Status.ACTIVE);
-        List<ContractDTO> contractDTOS = contracts.stream().map(contract -> modelMapper.map(contract, ContractDTO.class)).toList();
+        List<ContractResponseInList> contractDTOS = contracts.stream().map(contract -> modelMapper.map(contract, ContractResponseInList.class)).toList();
         logger.info("Get all contracts successfully.");
         return new ResponseEntity<>(contractDTOS, HttpStatus.OK);
     }
