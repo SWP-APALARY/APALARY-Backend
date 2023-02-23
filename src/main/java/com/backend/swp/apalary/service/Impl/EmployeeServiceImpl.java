@@ -92,4 +92,20 @@ public class EmployeeServiceImpl implements com.backend.swp.apalary.service.Empl
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Void> banEmployee(String employeeId) {
+        if (employeeId == null) {
+            logger.warn("{}" , ServiceMessage.INVALID_ARGUMENT_MESSAGE);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Employee employee = employeeRepository.findEmployeeByIdAndStatus(employeeId, Status.ACTIVE);
+        if (employee == null) {
+            logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        employee.setStatus(Status.INACTIVE);
+        employeeRepository.save(employee);
+        logger.info("Ban employee id {} successfully.", employeeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

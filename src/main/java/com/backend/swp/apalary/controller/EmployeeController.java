@@ -34,4 +34,8 @@ public class EmployeeController {
     public ResponseEntity<Void> updateProfile(@RequestBody EmployeeDTO employeeDTO, @RequestAttribute(required = false) String userId) {
         return employeeService.updateEmployee(employeeDTO, userId);
     }
+    @DeleteMapping("/{employeeId}")
+    public ResponseEntity<Void> banEmployee(@PathVariable String employeeId) {
+        return employeeService.banEmployee(employeeId);
+    }
 }
