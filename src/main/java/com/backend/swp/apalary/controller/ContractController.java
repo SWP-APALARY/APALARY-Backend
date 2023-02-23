@@ -2,6 +2,7 @@ package com.backend.swp.apalary.controller;
 
 import com.backend.swp.apalary.model.dto.ContractDTO;
 import com.backend.swp.apalary.model.dto.RuleSalaryDTO;
+import com.backend.swp.apalary.model.response.ContractResponseInList;
 import com.backend.swp.apalary.service.ContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class ContractController {
         return contractService.createContract(contractDTO);
     }
     @GetMapping("/all")
-    public ResponseEntity<List<ContractDTO>> getAllContract() {
+    public ResponseEntity<List<ContractResponseInList>> getAllContract() {
         return contractService.getAllContract();
     }
     @GetMapping("/{id}")

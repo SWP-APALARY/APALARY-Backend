@@ -1,9 +1,7 @@
 package com.backend.swp.apalary.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,7 +9,8 @@ import java.util.List;
 @Table(name = "rule_salary")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class RuleSalary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,12 +2,11 @@ package com.backend.swp.apalary.model.entity;
 
 import com.backend.swp.apalary.model.constant.Status;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "applicant")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +22,7 @@ public class Applicant {
     @Column
     private String email;
     @Column
+    @Basic(fetch = FetchType.LAZY)
     private String cv;
     @Column
     private int gender;

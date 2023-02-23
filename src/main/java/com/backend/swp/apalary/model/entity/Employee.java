@@ -14,7 +14,8 @@ import java.util.Collections;
 
 @Entity
 @Table(name = "employee")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -43,18 +44,12 @@ public class Employee implements UserDetails {
     @Column
     private Status status;
     @Column(name = "manager_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private String managerId;
     @ManyToOne
     @JoinColumn(name = "department_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Department department;
     @OneToOne
     @JoinColumn(name = "contract_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private Contract contract;
 
     @Override
