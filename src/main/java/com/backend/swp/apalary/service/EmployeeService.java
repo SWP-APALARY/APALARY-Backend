@@ -9,4 +9,6 @@ public interface EmployeeService {
     ResponseEntity<EmployeeDTO> getEmployeeById(String id);
     ResponseEntity<List<EmployeeDTO>> getAllEmployee();
     ResponseEntity<Void> updateEmployee(EmployeeDTO employeeDTO, String userId);
+
+    ResponseEntity<Void> banEmployee(String employeeId);
 }

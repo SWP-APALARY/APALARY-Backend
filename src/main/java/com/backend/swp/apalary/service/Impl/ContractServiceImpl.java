@@ -74,6 +74,49 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
         logger.info("Create Contract successfully.");
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Void> resignContract(ContractDTO contractDTO, String employeeId) {
+        logger.info("Resign contract {} for employee id {}", contractDTO, employeeId);
+        if (employeeId == null) {
+            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (contractDTO == null) {
+            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Employee employee = employeeRepository.findEmployeeByIdAndStatus(employeeId, Status.ACTIVE);
+        if (employee == null) {
+            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        ContractType contractType = contractTypeRepository.findContractTypeById(contractDTO.getContractTypeId());
+        if (contractType == null) {
+            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Contract contract = modelMapper.map(contractDTO, Contract.class);
+        contract.setStatus(Status.ACTIVE);
+        contract.setContractType(contractType);
+        contract.setRuleSalaries(new ArrayList<>());
+        for (int ruleNumber : contractDTO.getRuleSalaryRuleNumbers()) {
+            RuleSalary ruleSalary = ruleSalaryRepository.findRuleSalaryByRuleNumber(ruleNumber);
+            if (ruleSalary == null) {
+                logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            contract.getRuleSalaries().add(ruleSalary);
+            ruleSalary.getContracts().add(contract);
+        }
+        employee.setContract(contract);
+        contractRepository.save(contract);
+        employeeRepository.save(employee);
+        logger.info("Create Contract successfully.");
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
     @Override
     @Transactional
     public ResponseEntity<List<ContractResponseInList>> getAllContract() {
