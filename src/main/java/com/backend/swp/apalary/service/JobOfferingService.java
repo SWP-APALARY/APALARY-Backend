@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface JobOfferingService {
-    ResponseEntity<Void> createJobOffering(JobOfferingDTO jobOfferingDTO);
+    ResponseEntity<Void> createJobOffering(JobOfferingDTO jobOfferingDTO, String employeeId);
+
     ResponseEntity<List<JobOfferingDTO>> getAllJobOfferings();
     ResponseEntity<JobOfferingDTO> getJobOfferingById(Integer id);
     ResponseEntity<Void> updateJobOffering(JobOfferingDTO jobOfferingDTO);

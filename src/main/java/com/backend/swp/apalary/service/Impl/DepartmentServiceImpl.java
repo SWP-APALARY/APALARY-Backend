@@ -21,7 +21,7 @@ import java.util.List;
 public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final ModelMapper modelMapper;
-    private static final Logger logger = LogManager.getLogger(DepartmentDTO.class);
+    private static final Logger logger = LogManager.getLogger(DepartmentServiceImpl.class);
 
     @Override
     @Transactional

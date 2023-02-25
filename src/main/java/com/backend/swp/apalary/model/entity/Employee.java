@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "employee")
@@ -51,6 +52,11 @@ public class Employee implements UserDetails {
     @OneToOne
     @JoinColumn(name = "contract_id")
     private Contract contract;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
+    private List<Application> applications;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
+    private List<JobOffering> jobOfferings;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
