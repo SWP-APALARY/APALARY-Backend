@@ -17,15 +17,25 @@ public class Application {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
+    @Column
     private String title;
+    @Column
     private String description;
+    @Column(name = "created_time", insertable = false, updatable = false)
     private Timestamp createdTime;
-    private int presentDay;
-    private int absentDay;
+    @Column(name = "present_day")
+    private Integer presentDay;
+    @Column(name = "absent_day")
+    private Integer absentDay;
+    @Column(name = "ot_day")
+    private Integer otDay;
     private Status status;
     @ManyToOne
     @JoinColumn(name = "application_type_id")
     private ApplicationType applicationType;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
 }

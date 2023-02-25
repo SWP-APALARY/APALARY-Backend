@@ -25,11 +25,11 @@ public class Contract {
     private Integer assurances;
     @Column
     private String description;
-    @Column(name = "signed_date")
+    @Column(name = "signed_date", updatable = false)
     private Date signedDate;
-    @Column(name = "start_date")
+    @Column(name = "start_date", updatable = false)
     private Date startDate;
-    @Column(name = "end_date")
+    @Column(name = "end_date", updatable = false)
     private Date endDate;
     @Column(name = "contract_image")
     private String contractImage;

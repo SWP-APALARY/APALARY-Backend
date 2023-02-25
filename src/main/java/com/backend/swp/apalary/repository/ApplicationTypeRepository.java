@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ApplicationTypeRepository extends JpaRepository<ApplicationType, Integer> {
-
+    ApplicationType findApplicationTypeById(Integer id);
 }

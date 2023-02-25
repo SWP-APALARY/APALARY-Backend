@@ -4,16 +4,12 @@ import com.backend.swp.apalary.model.dto.ContractDTO;
 import com.backend.swp.apalary.model.dto.RuleSalaryDTO;
 import com.backend.swp.apalary.model.response.ContractResponseInList;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public interface ContractService {
     ResponseEntity<Void> createContract(ContractDTO contractDTO);
-
-    @Transactional
     ResponseEntity<Void> resignContract(ContractDTO contractDTO, String employeeId);
-
     ResponseEntity<List<ContractResponseInList>> getAllContract();
     ResponseEntity<ContractDTO> getContractById(String id);
     ResponseEntity<Void> deleteContract(String id);

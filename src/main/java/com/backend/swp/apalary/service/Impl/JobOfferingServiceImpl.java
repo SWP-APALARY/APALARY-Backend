@@ -37,7 +37,7 @@ public class JobOfferingServiceImpl implements com.backend.swp.apalary.service.J
         this.modelMapper = modelMapper;
     }
     @Override
-    public ResponseEntity<Void> createJobOffering(JobOfferingDTO jobOfferingDTO) {
+    public ResponseEntity<Void> createJobOffering(JobOfferingDTO jobOfferingDTO, String employeeId) {
         logger.info("{}{}", CREATE_JOB_OFFERING_MESSAGE, jobOfferingDTO);
         if (jobOfferingDTO == null) {
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
@@ -48,7 +48,7 @@ public class JobOfferingServiceImpl implements com.backend.swp.apalary.service.J
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Employee employee = employeeRepository.findEmployeeByIdAndStatus(jobOfferingDTO.getEmployeeId(), Status.ACTIVE);
+        Employee employee = employeeRepository.findEmployeeByIdAndStatus(employeeId, Status.ACTIVE);
         if (employee == null) {
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
