@@ -111,6 +111,9 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
             contract.getRuleSalaries().add(ruleSalary);
             ruleSalary.getContracts().add(contract);
         }
+        Contract oldContract = employee.getContract();
+        oldContract.setStatus(Status.INACTIVE);
+        contractRepository.save(oldContract);
         employee.setContract(contract);
         contractRepository.save(contract);
         employeeRepository.save(employee);
