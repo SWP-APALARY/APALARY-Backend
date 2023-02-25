@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface ContractService {
     ResponseEntity<Void> createContract(ContractDTO contractDTO);
+    ResponseEntity<Void> resignContract(ContractDTO contractDTO, String employeeId);
     ResponseEntity<List<ContractResponseInList>> getAllContract();
     ResponseEntity<ContractDTO> getContractById(String id);
     ResponseEntity<Void> deleteContract(String id);

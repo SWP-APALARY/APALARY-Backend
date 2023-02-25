@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/job-offering/**").hasAnyRole(Role.HR_MANAGER.name(), Role.HR_EMPLOYEE.name())
                 .requestMatchers(HttpMethod.GET, "/employee/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/employee").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "employee/**").hasAnyRole(Role.HR_MANAGER.name(), Role.HR_EMPLOYEE.name())
                 .requestMatchers(HttpMethod.POST, "/applicant/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/applicant/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.MANAGER.name())
                 .requestMatchers(HttpMethod.PUT, "/applicant/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())

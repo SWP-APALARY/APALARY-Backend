@@ -19,6 +19,10 @@ public class ContractController {
     public ResponseEntity<Void> createContract(@RequestBody ContractDTO contractDTO) {
         return contractService.createContract(contractDTO);
     }
+    @PostMapping("/resign")
+    public ResponseEntity<Void> resignContract(@RequestBody ContractDTO contractDTO, @RequestParam String employeeId) {
+        return contractService.resignContract(contractDTO, employeeId);
+    }
     @GetMapping("/all")
     public ResponseEntity<List<ContractResponseInList>> getAllContract() {
         return contractService.getAllContract();
