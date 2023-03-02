@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "contract")
@@ -47,4 +48,19 @@ public class Contract {
             inverseJoinColumns = @JoinColumn(name = "rule_salary_rule_number")
     )
     List<RuleSalary> ruleSalaries;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contract")
+    private List<Salary> salaries;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contract contract = (Contract) o;
+        return Objects.equals(id, contract.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
