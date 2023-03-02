@@ -32,6 +32,8 @@ public class Application {
     private Integer lateDay;
     @Column(name = "ot_day")
     private Integer otDay;
+    @Column
+    @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToOne
     @JoinColumn(name = "application_type_id")
