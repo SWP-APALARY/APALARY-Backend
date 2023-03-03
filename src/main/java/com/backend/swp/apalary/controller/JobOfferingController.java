@@ -18,8 +18,8 @@ public class JobOfferingController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createJobOffering(@RequestBody JobOfferingDTO jobOfferingDTO, @RequestAttribute(required = false) String employeeId) {
-        return jobOfferingService.createJobOffering(jobOfferingDTO, employeeId);
+    public ResponseEntity<Void> createJobOffering(@RequestBody JobOfferingDTO jobOfferingDTO, @RequestAttribute(required = false) String userId) {
+        return jobOfferingService.createJobOffering(jobOfferingDTO, userId);
     }
     @GetMapping
     public ResponseEntity<List<JobOfferingDTO>> getAllJobOfferings() {
