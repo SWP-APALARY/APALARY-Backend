@@ -17,6 +17,7 @@ public class ResidentDTO {
     private Date dateOfBirth;
     private String identifyNumber;
     private String email;
+    private String phone;
     private String apartmentNumber;
     private Status status;
 }
