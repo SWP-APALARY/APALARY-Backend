@@ -12,6 +12,7 @@ import java.util.List;
 public interface ApplicationRepository extends JpaRepository<Application, Integer> {
     Application findApplicationByIdAndStatus(Integer id, Status status);
     List<Application> findApplicationByStatus(Status status);
+    List<Application> findApplicationByStatusAndApplicationTypeId(Status status, Integer applicationTypeId);
     @Query(nativeQuery = true,value = "SELECT * FROM application\n" +
             "WHERE YEAR(created_time) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)\n" +
             "AND MONTH(created_time) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)\n" +
