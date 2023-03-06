@@ -25,15 +25,12 @@ import java.util.List;
 public class SalaryServiceImpl implements SalaryService {
     private final SalaryRepository salaryRepository;
     private final EmployeeRepository employeeRepository;
-    private final ContractRepository contractRepository;
     private final FeedbackRepository feedbackRepository;
     private final ApplicationRepository applicationRepository;
     private final ModelMapper modelMapper;
 
     private static final Logger logger = LogManager.getLogger(SalaryServiceImpl.class);
     private static final String GET_SALARY_MESSAGE = "Get salary: ";
-    private static final String CREATE_SALARY_MESSAGE = "Create salary: ";
-    private static final String UPDATE_SALARY_MESSAGE = "Update salary: ";
 
     @Override
     public ResponseEntity<List<SalaryDTO>> getSalaryByMonthAndYear(Integer month, Integer year) {
@@ -72,7 +69,7 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     @Transactional
-    @Scheduled(cron = "0 0 3 4 * ?", zone = "Asia/Ho_Chi_Minh")
+    @Scheduled(cron = "0 0 3 1 * ?", zone = "Asia/Ho_Chi_Minh")
     public void calculateSalary() {
         LocalDate now = LocalDate.now();
         int month = now.getMonthValue();
