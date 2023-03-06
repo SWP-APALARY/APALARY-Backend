@@ -34,7 +34,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://be.binhdt.dev", "http://be.binhdt.dev", "http://localhost:5173"));
+        configuration.setAllowedOrigins(Arrays.asList("https://be.duybinhngo.live", "http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
