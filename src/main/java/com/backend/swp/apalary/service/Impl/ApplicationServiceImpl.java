@@ -69,7 +69,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             logger.warn(ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Application application = applicationRepository.findApplicationByIdAndStatus(id, Status.ACTIVE);
+        Application application = applicationRepository.findApplicationById(id);
         if (application == null) {
             logger.warn(ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

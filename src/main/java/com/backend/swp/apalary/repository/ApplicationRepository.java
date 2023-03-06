@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Integer> {
     Application findApplicationByIdAndStatus(Integer id, Status status);
+    Application findApplicationById(Integer id);
     List<Application> findApplicationByStatus(Status status);
     List<Application> findApplicationByStatusAndApplicationTypeId(Status status, Integer applicationTypeId);
     @Query(nativeQuery = true,value = "SELECT * FROM application\n" +
