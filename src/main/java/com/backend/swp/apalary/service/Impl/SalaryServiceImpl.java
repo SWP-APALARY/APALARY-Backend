@@ -101,7 +101,7 @@ public class SalaryServiceImpl implements SalaryService {
             int base = contract.getBase();
             double taxRate = ((double) contract.getTax()) / 100;
             double assurancesRate = contract.getAssurances() / 100;
-            int net = (int) (base * (1 + point * 0.001 - taxRate - assurancesRate)) - moneyDecreaseBaseOnTax(contract.getTax());
+            int net = (int) (base * (1 + point * 0.001 - taxRate - assurancesRate)) + moneyDecreaseBaseOnTax(contract.getTax());
             if (finalMonth == 2) {
                 if (ruleSalaries.contains(new RuleSalary(6))) {
                     if (isExcellentEmployee(employee)) net += 0.1 * base;
