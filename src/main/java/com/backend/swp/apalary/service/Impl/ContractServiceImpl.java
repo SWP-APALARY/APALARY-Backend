@@ -58,6 +58,28 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Contract contract = modelMapper.map(contractDTO, Contract.class);
+        int base = contract.getBase();
+        int tax;
+        if (base <= 5000000) {
+            tax = 5;
+        }
+        else if (base <= 10000000) {
+            tax = 10;
+        }
+        else if (base <= 18000000) {
+            tax = 15;
+        }
+        else if (base <= 32000000) {
+            tax = 20;
+        } else if (base <= 52000000) {
+            tax = 25;
+        } else if (base <= 80000000) {
+            tax = 30;
+        } else {
+            tax = 35;
+        }
+        contract.setTax(tax);
+        contract.setAssurances(8 + 1.5 + 1);
         contract.setStatus(Status.ACTIVE);
         contract.setContractType(contractType);
         contract.setRuleSalaries(new ArrayList<>());
@@ -99,6 +121,28 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Contract contract = modelMapper.map(contractDTO, Contract.class);
+        int base = contract.getBase();
+        int tax;
+        if (base <= 5000000) {
+            tax = 5;
+        }
+        else if (base <= 10000000) {
+            tax = 10;
+        }
+        else if (base <= 18000000) {
+            tax = 15;
+        }
+        else if (base <= 32000000) {
+            tax = 20;
+        } else if (base <= 52000000) {
+            tax = 25;
+        } else if (base <= 80000000) {
+            tax = 30;
+        } else {
+            tax = 35;
+        }
+        contract.setTax(tax);
+        contract.setAssurances(8 + 1.5 + 1);
         contract.setStatus(Status.ACTIVE);
         contract.setContractType(contractType);
         contract.setRuleSalaries(new ArrayList<>());
@@ -125,7 +169,13 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
     public ResponseEntity<List<ContractResponseInList>> getAllContract() {
         logger.info("{}{}", GET_CONTRACT_MESSAGE, "all");
         List<Contract> contracts = contractRepository.findContractByStatus(Status.ACTIVE);
-        List<ContractResponseInList> contractDTOS = contracts.stream().map(contract -> modelMapper.map(contract, ContractResponseInList.class)).toList();
+        List<ContractResponseInList> contractDTOS = contracts.stream().map(contract -> {
+            ContractResponseInList dto = modelMapper.map(contract, ContractResponseInList.class);
+            dto.setSocialAssurances(8.0);
+            dto.setMedicalAssurances(1.5);
+            dto.setAccidentalAssurances(1.0);
+            return dto;
+        }).toList();
         logger.info("Get all contracts successfully.");
         return new ResponseEntity<>(contractDTOS, HttpStatus.OK);
     }
@@ -142,6 +192,9 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         ContractDTO contractDTO = modelMapper.map(contract, ContractDTO.class);
+        contractDTO.setSocialAssurances(8.0);
+        contractDTO.setMedicalAssurances(1.5);
+        contractDTO.setAccidentalAssurances(1.0);
         logger.info("Get contract by id {} successfully.", id);
         return new ResponseEntity<>(contractDTO, HttpStatus.OK);
     }
@@ -180,6 +233,9 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
 
         Contract contract = contractRepository.findContractByEmployeeAndStatus(employee, Status.ACTIVE);
         ContractDTO dto = modelMapper.map(contract, ContractDTO.class);
+        dto.setSocialAssurances(8.0);
+        dto.setMedicalAssurances(1.5);
+        dto.setAccidentalAssurances(1.0);
         logger.info("Get contract of user {} successfully.", userId);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }

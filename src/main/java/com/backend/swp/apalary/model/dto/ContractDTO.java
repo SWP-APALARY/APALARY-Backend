@@ -13,7 +13,9 @@ public class ContractDTO {
     private String id;
     private Integer base;
     private Integer tax;
-    private Integer assurances;
+    private Double socialAssurances;
+    private Double medicalAssurances;
+    private Double accidentalAssurances;
     private String description;
     private Date signedDate;
     private Date startDate;

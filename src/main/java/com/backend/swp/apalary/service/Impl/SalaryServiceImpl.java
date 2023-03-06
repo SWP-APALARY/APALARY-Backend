@@ -100,8 +100,8 @@ public class SalaryServiceImpl implements SalaryService {
             salary.setYear(finalYear);
             int base = contract.getBase();
             double taxRate = ((double) contract.getTax()) / 100;
-            double assurancesRate = ((double) contract.getAssurances()) / 100;
-            int net = (int) (base * (1 + point * 0.001 - taxRate - assurancesRate));
+            double assurancesRate = contract.getAssurances() / 100;
+            int net = (int) (base * (1 + point * 0.001 - taxRate - assurancesRate)) - moneyDecreaseBaseOnTax(contract.getTax());
             if (finalMonth == 2) {
                 if (ruleSalaries.contains(new RuleSalary(6))) {
                     if (isExcellentEmployee(employee)) net += 0.1 * base;
@@ -143,13 +143,43 @@ public class SalaryServiceImpl implements SalaryService {
         return 0;
     }
 
-    boolean isExcellentEmployee(Employee employee) {
+    private boolean isExcellentEmployee(Employee employee) {
         Integer amountFeedback = feedbackRepository.countFeedbackOfAnEmployeeOfEntireYear(employee.getId());
         if (amountFeedback >= 50) {
             Double averageStar = feedbackRepository.averageStarOfAnEmployee(employee.getId());
             return averageStar >= 4.5;
         }
         return false;
+    }
+
+    private int moneyDecreaseBaseOnTax(int tax) {
+        double money;
+        if (tax == 5) {
+            money = 0;
+        }
+        else if (tax == 10) {
+            money = 0.25;
+
+        }
+        else if (tax == 15) {
+            money = 0.75;
+
+        }
+        else if (tax == 20) {
+            money = 1.65;
+
+        }
+        else if (tax == 25) {
+            money = 3.25;
+
+        }
+        else if (tax == 30) {
+            money = 5.85;
+
+        } else {
+            money = 9.85;
+        }
+        return (int) (money * 1000000);
     }
 
 }

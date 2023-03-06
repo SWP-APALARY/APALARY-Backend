@@ -17,7 +17,9 @@ public class ContractResponseInList{
     private String employeeId;
     private Integer base;
     private Integer tax;
-    private Integer assurance;
+    private Double socialAssurances;
+    private Double medicalAssurances;
+    private Double accidentalAssurances;
     private String description;
     private Date signedDate;
     private Date startDate;

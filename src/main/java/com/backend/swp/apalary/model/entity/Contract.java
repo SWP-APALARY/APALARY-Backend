@@ -23,7 +23,7 @@ public class Contract {
     @Column
     private Integer tax;
     @Column
-    private Integer assurances;
+    private Double assurances;
     @Column
     private String description;
     @Column(name = "signed_date", updatable = false)
