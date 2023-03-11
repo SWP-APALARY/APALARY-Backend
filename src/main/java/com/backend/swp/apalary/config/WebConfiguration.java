@@ -1,12 +1,22 @@
 package com.backend.swp.apalary.config;
 
+import com.backend.swp.apalary.config.converter.RuleSalaryConverter;
+import com.backend.swp.apalary.config.converter.RuleSalaryTimeConverter;
+import com.backend.swp.apalary.model.dto.ContractDTO;
+import com.backend.swp.apalary.model.dto.SalaryDTO;
+import com.backend.swp.apalary.model.entity.Contract;
+import com.backend.swp.apalary.model.entity.Salary;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -30,6 +40,21 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Primary
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+    @Bean(name = "contractMapper")
+    public ModelMapper contractMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        TypeMap<Contract, ContractDTO> propertyMap = modelMapper.createTypeMap(Contract.class, ContractDTO.class);
+        propertyMap.addMappings(mapper -> mapper.using(new RuleSalaryConverter()).map(Contract::getRuleSalaries, ContractDTO::setRuleSalaryDescription));
+        return modelMapper;
+    }
+    @Bean(name = "salaryMapper")
+    public ModelMapper salaryMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        TypeMap<Salary, SalaryDTO> propertyMap = modelMapper.createTypeMap(Salary.class, SalaryDTO.class);
+        propertyMap.addMappings(mapper -> mapper.using(new RuleSalaryTimeConverter()).map(Salary::getTimes, SalaryDTO::setRuleSalaryObtain));
+        propertyMap.addMappings(mapper -> mapper.map(Salary::getTotal, SalaryDTO::setTotal));
+        return modelMapper;
     }
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
@@ -55,5 +80,16 @@ public class WebConfiguration implements WebMvcConfigurer {
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.debug", "true");
         return mailSender;
+    }
+
+    @Bean(name = "applicationEventMulticaster")
+    public ApplicationEventMulticaster simpleApplicationMulticaster() {
+        SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
+        ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+        threadPoolTaskExecutor.setCorePoolSize(8);
+        threadPoolTaskExecutor.setMaxPoolSize(16);
+        threadPoolTaskExecutor.initialize();
+        eventMulticaster.setTaskExecutor(threadPoolTaskExecutor);
+        return eventMulticaster;
     }
 }
