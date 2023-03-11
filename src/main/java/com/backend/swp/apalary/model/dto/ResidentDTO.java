@@ -14,6 +14,7 @@ public class ResidentDTO {
     private String id;
     private String username;
     private String name;
+    private int gender;
     private Date dateOfBirth;
     private String identifyNumber;
     private String email;
