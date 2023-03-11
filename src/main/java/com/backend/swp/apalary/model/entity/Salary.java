@@ -30,8 +30,8 @@ public class Salary {
     @Column
     private String description;
     @ManyToOne
-    @JoinColumn(name = "contract_id")
-    private Contract contract;
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
     @OneToMany(mappedBy = "salary", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RuleSalaryTime> times;

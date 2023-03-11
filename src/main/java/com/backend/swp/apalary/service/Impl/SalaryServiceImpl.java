@@ -66,16 +66,27 @@ public class SalaryServiceImpl implements SalaryService {
             logger.warn(ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Contract contract = employee.getContract();
-        if (contract == null) {
-            logger.warn(ServiceMessage.INVALID_ARGUMENT_MESSAGE);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        List<Salary> salaries = salaryRepository.findSalaryByContract(contract);
+        List<Salary> salaries = salaryRepository.findSalaryByEmployee(employee);
         List<SalaryDTO> salaryDTOS = salaries.stream().map(salary -> modelMapper.map(salary, SalaryDTO.class)).toList();
         return new ResponseEntity<>(salaryDTOS, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<SalaryDTO> getSalaryOfAnEmployeeByMonthAndYear(String employeeId, int month, int year) {
+        logger.info("{}{}in month {} year {}", GET_SALARY_MESSAGE, employeeId, month, year);
+        if (month < 1 || month > 12) {
+            logger.warn(ServiceMessage.INVALID_ARGUMENT_MESSAGE);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (!salaryRepository.existsByEmployeeId(employeeId)) {
+           logger.warn(ServiceMessage.ID_NOT_EXIST_MESSAGE);
+           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Salary salary = salaryRepository.findSalaryByEmployeeIdAndMonthAndYear(employeeId, month, year);
+        SalaryDTO salaryDTO = modelMapper.map(salary, SalaryDTO.class);
+        logger.info("Get salary of employee {} in month {} and year {} successfully.", employeeId, month, year);
+        return new ResponseEntity<>(salaryDTO, HttpStatus.OK);
+    }
     @Override
     @Transactional
     @Scheduled(fixedDelay = 1000*60*60, initialDelay = 1000)
@@ -134,7 +145,7 @@ public class SalaryServiceImpl implements SalaryService {
             salary.setNet(net);
             salary.setBonus(bonus);
             salary.setPenalty(penalty);
-            salary.setContract(contract);
+            salary.setEmployee(employee);
             salary.setDescription("description");
             logger.info("Calculate salary for employee {} successfully.", employee.getId());
             salaryRepository.save(salary);

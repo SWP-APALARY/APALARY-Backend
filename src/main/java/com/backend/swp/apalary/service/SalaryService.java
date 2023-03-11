@@ -10,5 +10,7 @@ public interface SalaryService {
 
     ResponseEntity<List<SalaryDTO>> getSalaryByEmployeeId(String employeeId);
 
+    ResponseEntity<SalaryDTO> getSalaryOfAnEmployeeByMonthAndYear(String employeeId, int month, int year);
+
     void calculateSalary();
 }

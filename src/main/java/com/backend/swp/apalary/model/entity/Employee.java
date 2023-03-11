@@ -60,6 +60,8 @@ public class Employee implements UserDetails {
     private List<JobOffering> jobOfferings;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "destinationEmployee")
     private List<Application> mentionedApplication;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
+    private List<Salary> salaries;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name())) ;

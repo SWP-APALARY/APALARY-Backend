@@ -50,8 +50,6 @@ public class Contract {
             inverseJoinColumns = @JoinColumn(name = "rule_salary_rule_number")
     )
     List<RuleSalary> ruleSalaries;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contract")
-    private List<Salary> salaries;
 
     @Override
     public boolean equals(Object o) {
