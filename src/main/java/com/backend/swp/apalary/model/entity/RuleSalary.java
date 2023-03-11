@@ -26,7 +26,8 @@ public class RuleSalary {
     private int point;
     @ManyToMany(mappedBy = "ruleSalaries", fetch = FetchType.LAZY)
     private List<Contract> contracts;
-
+    @OneToMany(mappedBy = "ruleSalary", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<RuleSalaryTime> times;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,7 +35,6 @@ public class RuleSalary {
         RuleSalary that = (RuleSalary) o;
         return Objects.equals(ruleNumber, that.ruleNumber);
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(ruleNumber);
