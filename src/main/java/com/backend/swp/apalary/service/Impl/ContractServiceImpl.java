@@ -16,6 +16,7 @@ import com.backend.swp.apalary.service.constant.ServiceMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
     private static final String GET_CONTRACT_MESSAGE = "Get contract: ";
     private static final String DELETE_CONTRACT_MESSAGE = "Delete contract: ";
 
-    public ContractServiceImpl(ContractRepository contractRepository, EmployeeRepository employeeRepository, ContractTypeRepository contractTypeRepository, RuleSalaryRepository ruleSalaryRepository, ModelMapper modelMapper) {
+    public ContractServiceImpl(ContractRepository contractRepository, EmployeeRepository employeeRepository, ContractTypeRepository contractTypeRepository, RuleSalaryRepository ruleSalaryRepository,@Qualifier("contractMapper") ModelMapper modelMapper) {
         this.contractRepository = contractRepository;
         this.employeeRepository = employeeRepository;
         this.contractTypeRepository = contractTypeRepository;
@@ -83,7 +84,7 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
         contract.setStatus(Status.ACTIVE);
         contract.setContractType(contractType);
         contract.setRuleSalaries(new ArrayList<>());
-        for (int ruleNumber : contractDTO.getRuleSalaryRuleNumbers()) {
+        for (int ruleNumber : contractDTO.getRuleSalaryRuleNumber()) {
             RuleSalary ruleSalary = ruleSalaryRepository.findRuleSalaryByRuleNumber(ruleNumber);
             if (ruleSalary == null) {
                 logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
@@ -146,7 +147,7 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
         contract.setStatus(Status.ACTIVE);
         contract.setContractType(contractType);
         contract.setRuleSalaries(new ArrayList<>());
-        for (int ruleNumber : contractDTO.getRuleSalaryRuleNumbers()) {
+        for (int ruleNumber : contractDTO.getRuleSalaryRuleNumber()) {
             RuleSalary ruleSalary = ruleSalaryRepository.findRuleSalaryByRuleNumber(ruleNumber);
             if (ruleSalary == null) {
                 logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
@@ -192,11 +193,26 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         ContractDTO contractDTO = modelMapper.map(contract, ContractDTO.class);
-        contractDTO.setSocialAssurances(8.0);
-        contractDTO.setMedicalAssurances(1.5);
-        contractDTO.setAccidentalAssurances(1.0);
+        contractDTO.setSocialAssurance(8.0);
+        contractDTO.setMedicalAssurance(1.5);
+        contractDTO.setAccidentalAssurance(1.0);
         logger.info("Get contract by id {} successfully.", id);
         return new ResponseEntity<>(contractDTO, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<ContractResponseInList>> getContractNotAssigned() {
+        logger.info("{}{}", GET_CONTRACT_MESSAGE, "all contracts are not assigned");
+        List<Contract> contracts = contractRepository.findContractNotAssigned();
+        List<ContractResponseInList> contractDTOS = contracts.stream().map(contract -> {
+            ContractResponseInList dto = modelMapper.map(contract, ContractResponseInList.class);
+            dto.setSocialAssurances(8.0);
+            dto.setMedicalAssurances(1.5);
+            dto.setAccidentalAssurances(1.0);
+            return dto;
+        }).toList();
+        logger.info("Get all contracts are not assigned successfully.");
+        return new ResponseEntity<>(contractDTOS, HttpStatus.OK);
     }
 
     @Override
@@ -233,9 +249,9 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
 
         Contract contract = contractRepository.findContractByEmployeeAndStatus(employee, Status.ACTIVE);
         ContractDTO dto = modelMapper.map(contract, ContractDTO.class);
-        dto.setSocialAssurances(8.0);
-        dto.setMedicalAssurances(1.5);
-        dto.setAccidentalAssurances(1.0);
+        dto.setSocialAssurance(8.0);
+        dto.setMedicalAssurance(1.5);
+        dto.setAccidentalAssurance(1.0);
         logger.info("Get contract of user {} successfully.", userId);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
@@ -248,6 +264,7 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
         logger.info("Get all rule salaries successfully.");
         return new ResponseEntity<>(ruleSalaries, HttpStatus.OK);
     }
+
 
 
 }

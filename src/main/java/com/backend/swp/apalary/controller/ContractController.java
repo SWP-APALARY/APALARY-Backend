@@ -42,9 +42,14 @@ public class ContractController {
         return contractService.getContractByUserId(userId);
     }
     @Operation(summary = "Get all rule salaries")
-    @GetMapping("rules-salary")
+    @GetMapping("/rules-salary")
     public ResponseEntity<List<RuleSalaryDTO>> getAllRuleSalary() {
         return contractService.getAllRuleSalary();
+    }
+    @Operation(summary = "Get all unassigned contract")
+    @GetMapping("/unassigned")
+    public ResponseEntity<List<ContractResponseInList>> getAllUnassignedContract() {
+        return contractService.getContractNotAssigned();
     }
     @Operation(summary = "Delete contract by id")
     @DeleteMapping("/{id}")

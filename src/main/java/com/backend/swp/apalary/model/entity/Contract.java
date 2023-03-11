@@ -18,6 +18,8 @@ public class Contract {
     @Column
     @Id
     private String id;
+    @Column(name = "employee_name")
+    private String nameOfEmployee;
     @Column
     private Integer base;
     @Column

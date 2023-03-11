@@ -15,6 +15,7 @@ import java.sql.Date;
 public class ContractResponseInList{
     private String id;
     private String employeeId;
+    private String nameOfEmployee;
     private Integer base;
     private Integer tax;
     private Double socialAssurances;
@@ -26,5 +27,4 @@ public class ContractResponseInList{
     private Date endDate;
     private Status status;
     private String contractTypeType;
-    private String employeeName;
 }
