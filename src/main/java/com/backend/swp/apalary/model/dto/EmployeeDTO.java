@@ -21,6 +21,8 @@ public class EmployeeDTO {
     private String email;
     private Role role;
     private String managerId;
+    private String managerName;
     private String departmentId;
+    private String departmentName;
     private String contractId;
 }
