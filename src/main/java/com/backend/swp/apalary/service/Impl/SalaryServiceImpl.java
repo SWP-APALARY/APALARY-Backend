@@ -6,10 +6,10 @@ import com.backend.swp.apalary.model.entity.*;
 import com.backend.swp.apalary.repository.*;
 import com.backend.swp.apalary.service.SalaryService;
 import com.backend.swp.apalary.service.constant.ServiceMessage;
-import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class SalaryServiceImpl implements SalaryService {
     private final SalaryRepository salaryRepository;
     private final EmployeeRepository employeeRepository;
@@ -30,7 +30,16 @@ public class SalaryServiceImpl implements SalaryService {
     private final ModelMapper modelMapper;
 
     private static final Logger logger = LogManager.getLogger(SalaryServiceImpl.class);
+
     private static final String GET_SALARY_MESSAGE = "Get salary: ";
+
+    public SalaryServiceImpl(SalaryRepository salaryRepository, EmployeeRepository employeeRepository, FeedbackRepository feedbackRepository, ApplicationRepository applicationRepository,@Qualifier("salaryMapper") ModelMapper modelMapper) {
+        this.salaryRepository = salaryRepository;
+        this.employeeRepository = employeeRepository;
+        this.feedbackRepository = feedbackRepository;
+        this.applicationRepository = applicationRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public ResponseEntity<List<SalaryDTO>> getSalaryByMonthAndYear(Integer month, Integer year) {
@@ -69,8 +78,9 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     @Transactional
-    @Scheduled(cron = "0 0 3 1 * ?", zone = "Asia/Ho_Chi_Minh")
+    @Scheduled(fixedDelay = 1000*60*60, initialDelay = 1000)
     public void calculateSalary() {
+        //cron = "0 0 3 8 * ?", zone = "Asia/Ho_Chi_Minh"
         LocalDate now = LocalDate.now();
         int month = now.getMonthValue();
         int year = now.getYear();
@@ -88,26 +98,42 @@ public class SalaryServiceImpl implements SalaryService {
         applications.forEach(application -> {
             Employee destinationEmployee = application.getDestinationEmployee();
             Contract contract = destinationEmployee.getContract();
-            int point = 0;
+            int bonus = 0;
+            int penalty = 0;
             List<RuleSalary> ruleSalaries = contract.getRuleSalaries();
             Employee employee = employeeRepository.findEmployeeByContract(contract);
-            for (RuleSalary ruleSalary: ruleSalaries) {
-                point += calculatePointByRuleSalaryMonthly(application, employee, ruleSalary.getRuleNumber());
-            }
             Salary salary = new Salary();
+            salary.setTimes(new ArrayList<>());
+            for (RuleSalary ruleSalary: ruleSalaries) {
+                int point = calculatePointByRuleSalaryMonthly(application, employee, ruleSalary.getRuleNumber());
+                if (point == 0)
+                    continue;
+                RuleSalaryTime ruleSalaryTime = new RuleSalaryTime();
+                ruleSalaryTime.setSalary(salary);
+                ruleSalaryTime.setRuleSalary(ruleSalary);
+                ruleSalaryTime.setTime(getRuleSalaryObtainedTime(ruleSalary.getRuleNumber(), point));
+                salary.getTimes().add(ruleSalaryTime);
+                if (point > 0) bonus += point;
+                else penalty -= point;
+            }
+
             salary.setId(null);
             salary.setMonth(finalMonth);
             salary.setYear(finalYear);
             int base = contract.getBase();
             double taxRate = ((double) contract.getTax()) / 100;
             double assurancesRate = contract.getAssurances() / 100;
-            int net = (int) (base * (1 + point * 0.001 - taxRate - assurancesRate)) + moneyDecreaseBaseOnTax(contract.getTax());
-            if (finalMonth == 2) {
+            int net = (int) (base * (1 - taxRate - assurancesRate)) + moneyDecreaseBaseOnTax(contract.getTax());
+            if (finalMonth == 12) {
                 if (ruleSalaries.contains(new RuleSalary(6))) {
                     if (isExcellentEmployee(employee)) net += 0.1 * base;
                 }
             }
+            bonus = (int) (bonus * 0.001 *base );
+            penalty = (int) (penalty * 0.001 * base);
             salary.setNet(net);
+            salary.setBonus(bonus);
+            salary.setPenalty(penalty);
             salary.setContract(contract);
             salary.setDescription("description");
             logger.info("Calculate salary for employee {} successfully.", employee.getId());
@@ -182,4 +208,13 @@ public class SalaryServiceImpl implements SalaryService {
         return (int) (money * 1000000);
     }
 
+    private int getRuleSalaryObtainedTime(int ruleNumber, int point) {
+        if (ruleNumber == 1)
+            return point / (-10);
+        if (ruleNumber == 2)
+            return point / (-100);
+        if (ruleNumber == 4)
+            return point / 10;
+        return 1;
+    }
 }
