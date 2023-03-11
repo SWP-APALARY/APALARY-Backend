@@ -198,6 +198,15 @@ public class ApplicationServiceImpl implements ApplicationService {
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
 
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getAllApplicationOfCurrentEmployee(String employeeId) {
+        logger.info("{}{}{}", GET_APPLICATION_MESSAGE, "all applications of current employee with id: ", employeeId);
+        List<Application> applications = applicationRepository.findApplicationByEmployeeId(employeeId);
+        List<ApplicationDTO> applicationDTOS = applications.stream().map(application -> modelMapper.map(application, ApplicationDTO.class)).toList();
+        logger.info("Get all application of employee {} successfully.", employeeId);
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
     private List<ApplicationDTO> getApplicationByStatusAndApplicationType(Status status, int applicationTypeId) {
         List<Application> applications = applicationRepository.findApplicationByStatusAndApplicationTypeId(status, applicationTypeId);
         return applications.stream().map(application -> modelMapper.map(application, ApplicationDTO.class)).toList();

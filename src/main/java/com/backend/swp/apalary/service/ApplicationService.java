@@ -51,6 +51,9 @@ public interface ApplicationService {
     @Transactional
     ResponseEntity<List<ApplicationDTO>> getInactiveReport();
 
+    @Transactional
+    ResponseEntity<List<ApplicationDTO>> getAllApplicationOfCurrentEmployee(String employeeId);
+
     ResponseEntity<List<ApplicationDTO>> getAllApplication();
 
     ResponseEntity<Void> approveApplication(Integer id);

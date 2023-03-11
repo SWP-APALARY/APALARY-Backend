@@ -102,6 +102,11 @@ public class ApplicationController {
         return applicationService.getInactiveReport();
     }
 
+    @Operation(summary = "Get all application of current employee")
+    @GetMapping("/employee")
+    public ResponseEntity<List<ApplicationDTO>> getAllApplicationOfCurrentEmployee(@RequestAttribute(required = false) String userId) {
+        return applicationService.getAllApplicationOfCurrentEmployee(userId);
+    }
     @Operation(summary = "Get application by id")
     @GetMapping("/{id}")
     public ResponseEntity<ApplicationDTO> getApplicationById(@PathVariable Integer id) {
