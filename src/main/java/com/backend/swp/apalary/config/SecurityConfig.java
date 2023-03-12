@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -85,4 +87,22 @@ public class SecurityConfig {
 //                .addFilterBefore(headerSettingFilter, JwtAuthenticationFilter.class);
 //        return http.build();
       }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        String hierarchy = "ROLE_HEAD_MANAGER > ROLE_HR_MANAGER \n" +
+                "ROLE_HR_MANAGER > ROLE_HR_EMPLOYEE \n" +
+                "ROLE_HR_EMPLOYEE > ROLE_MANAGER \n" +
+                "ROLE_MANAGER > ROLE_EMPLOYEE";
+        roleHierarchy.setHierarchy(hierarchy);
+        return roleHierarchy;
+    }
+
+//    @Bean
+//    public DefaultWebSecurityExpressionHandler webSecurityExpressionHandler() {
+//        DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
+//        expressionHandler.setRoleHierarchy(roleHierarchy());
+//        return expressionHandler;
+//    }
 }
