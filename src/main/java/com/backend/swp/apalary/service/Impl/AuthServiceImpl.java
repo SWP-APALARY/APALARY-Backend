@@ -47,6 +47,14 @@ public class AuthServiceImpl implements com.backend.swp.apalary.service.AuthServ
             logger.warn("Employee already exist.");
             throw new IdExistException("Employee id already exists.");
         }
+        if (employeeRepository.existsByEmail(employeeDTO.getEmail())) {
+            logger.warn("Email already exists.");
+            throw new IdExistException("Email already exists.");
+        }
+        if (employeeRepository.existsByIdentifyNumber(employeeDTO.getIdentifyNumber())) {
+            logger.warn("Email already exists.");
+            throw new IdExistException("Identify number already exists.");
+        }
         Employee employee = modelMapper.map(employeeDTO, Employee.class);
         employee.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
         employee.setStatus(Status.ACTIVE);
