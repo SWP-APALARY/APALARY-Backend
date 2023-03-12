@@ -28,6 +28,8 @@ public class Resident implements UserDetails {
     private String password;
     @Column
     private String name;
+    @Column
+    private int gender;
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
     @Column(name = "identify_number", unique = true)

@@ -69,7 +69,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             logger.warn(ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Application application = applicationRepository.findApplicationByIdAndStatus(id, Status.ACTIVE);
+        Application application = applicationRepository.findApplicationById(id);
         if (application == null) {
             logger.warn(ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -78,7 +78,139 @@ public class ApplicationServiceImpl implements ApplicationService {
         logger.info("Get application {} successfully.", id);
         return new ResponseEntity<>(applicationDTO, HttpStatus.OK);
     }
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getProcessingSalaryIncreaseApplicationsForHeadManager() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Processing Salary Increase application for head manager");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING_2, 1);
+        logger.info("Get processing Salary Increase application for head manager successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
 
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getProcessingSalaryIncreaseApplications() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Processing Salary Increase application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 1);
+        logger.info("Get processing Salary Increase application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getActiveSalaryIncreaseApplication() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Active Salary Increase application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 1);
+        logger.info("Get active Salary Increase application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getInactiveSalaryIncreaseApplication() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Inactive Salary Increase application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 1);
+        logger.info("Get inactive Salary Increase application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getProcessingDayLeaveApplication() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Processing Day leave application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 2);
+        logger.info("Get processing day leave application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getActiveDayLeaveApplication() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Active Day leave application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 2);
+        logger.info("Get active day leave application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getInactiveDayLeaveApplication() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Inactive Day Leave application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 2);
+        logger.info("Get inactive Day Leave application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getProcessingRecruitment() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Processing recruitment application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 3);
+        logger.info("Get processing recruitment application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getActiveRecruitmentApplication() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Active recruitment application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 3);
+        logger.info("Get active recruitment application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getInactiveRecruitmentApplication() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Inactive recruitment application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 3);
+        logger.info("Get inactive recruitment application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getProcessingReport() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Processing Report application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 4);
+        logger.info("Get processing report application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getActiveReport() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Active Report application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 4);
+        logger.info("Get active report application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getInactiveReport() {
+        logger.info("{}{}", GET_APPLICATION_MESSAGE, "Inactive report application");
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 4);
+        logger.info("Get inactive report application successfully.");
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<List<ApplicationDTO>> getAllApplicationOfCurrentEmployee(String employeeId) {
+        logger.info("{}{}{}", GET_APPLICATION_MESSAGE, "all applications of current employee with id: ", employeeId);
+        List<Application> applications = applicationRepository.findApplicationByEmployeeId(employeeId);
+        List<ApplicationDTO> applicationDTOS = applications.stream().map(application -> modelMapper.map(application, ApplicationDTO.class)).toList();
+        logger.info("Get all application of employee {} successfully.", employeeId);
+        return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
+    }
+    private List<ApplicationDTO> getApplicationByStatusAndApplicationType(Status status, int applicationTypeId) {
+        List<Application> applications = applicationRepository.findApplicationByStatusAndApplicationTypeId(status, applicationTypeId);
+        return applications.stream().map(application -> modelMapper.map(application, ApplicationDTO.class)).toList();
+    }
     @Override
     @Transactional
     public ResponseEntity<List<ApplicationDTO>> getAllApplication() {
@@ -101,7 +233,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             logger.warn(ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        application.setStatus(Status.ACTIVE);
+        if (!application.getApplicationType().getId().equals(4)) application.setStatus(Status.ACTIVE);
+        else application.setStatus(Status.PROCESSING_2);
         applicationRepository.save(application);
         logger.info("Approve application id {} successfully.", id);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -125,5 +258,40 @@ public class ApplicationServiceImpl implements ApplicationService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Void> approveApplicationByHeadManager(Integer id) {
+        logger.info("{}by head manager {}", APPROVE_APPLICATION_MESSAGE, id);
+        if (id == null) {
+            logger.warn(ServiceMessage.INVALID_ARGUMENT_MESSAGE);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Application application = applicationRepository.findApplicationByIdAndStatus(id, Status.PROCESSING_2);
+        if (application == null) {
+            logger.warn(ServiceMessage.ID_NOT_EXIST_MESSAGE);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        application.setStatus(Status.ACTIVE);
+        applicationRepository.save(application);
+        logger.info("Approve application by head manager id {} successfully.", id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> disapproveApplicationByHeadManager(Integer id) {
+        logger.info("{} by head manager {}", DISAPPROVE_APPLICATION_MESSAGE, id);
+        if (id == null) {
+            logger.warn(ServiceMessage.INVALID_ARGUMENT_MESSAGE);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Application application = applicationRepository.findApplicationByIdAndStatus(id, Status.PROCESSING_2);
+        if (application == null) {
+            logger.warn(ServiceMessage.ID_NOT_EXIST_MESSAGE);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        application.setStatus(Status.INACTIVE);
+        applicationRepository.save(application);
+        logger.info("Disapprove application head manager id {} successfully.", id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }

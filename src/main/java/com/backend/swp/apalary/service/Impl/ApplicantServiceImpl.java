@@ -1,5 +1,6 @@
 package com.backend.swp.apalary.service.Impl;
 
+import com.backend.swp.apalary.config.event.EmailEvent;
 import com.backend.swp.apalary.model.constant.Status;
 import com.backend.swp.apalary.model.dto.ApplicantDTO;
 import com.backend.swp.apalary.model.entity.Applicant;
@@ -12,6 +13,7 @@ import com.backend.swp.apalary.service.constant.ServiceMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,15 +27,16 @@ public class ApplicantServiceImpl implements ApplicantService {
     ApplicantRepository applicantRepository;
     final JobOfferingRepository jobOfferingRepository;
     final ModelMapper modelMapper;
+    final ApplicationEventMulticaster applicationEventMulticaster;
     private static final Logger logger = LogManager.getLogger(ApplicantServiceImpl.class);
     private static final String CREATE_APPLICANT_MESSAGE = "Create applicant: ";
     private static final String GET_APPLICANT_MESSAGE = "Get applicant: ";
 
-    public ApplicantServiceImpl(ApplicantRepository applicantRepository, JobOfferingRepository jobOfferingRepository, ModelMapper modelMapper) {
+    public ApplicantServiceImpl(ApplicantRepository applicantRepository, JobOfferingRepository jobOfferingRepository, ModelMapper modelMapper, ApplicationEventMulticaster applicationEventMulticaster) {
         this.applicantRepository = applicantRepository;
         this.jobOfferingRepository = jobOfferingRepository;
         this.modelMapper = modelMapper;
-
+        this.applicationEventMulticaster = applicationEventMulticaster;
     }
 
     @Override
@@ -141,6 +144,7 @@ public class ApplicantServiceImpl implements ApplicantService {
         if (isAccepted) applicant.setStatus(Status.ACTIVE);
         else applicant.setStatus(Status.INACTIVE);
         applicantRepository.save(applicant);
+        applicationEventMulticaster.multicastEvent(new EmailEvent(this, isAccepted, applicant.getName(), applicant.getEmail()));
         JobOffering jobOffering = applicant.getJobOffering();
         int countEmployee = applicantRepository.countApplicantByJobOfferingAndStatus(jobOffering, Status.ACTIVE);
         if (countEmployee == jobOffering.getMaxEmployee()) {
@@ -148,6 +152,7 @@ public class ApplicantServiceImpl implements ApplicantService {
             jobOfferingRepository.save(jobOffering);
         }
         logger.info("Successful.");
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

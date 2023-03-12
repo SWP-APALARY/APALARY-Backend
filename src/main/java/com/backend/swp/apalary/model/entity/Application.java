@@ -28,8 +28,12 @@ public class Application {
     private Integer presentDay;
     @Column(name = "absent_day")
     private Integer absentDay;
+    @Column(name = "late_day")
+    private Integer lateDay;
     @Column(name = "ot_day")
     private Integer otDay;
+    @Column
+    @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToOne
     @JoinColumn(name = "application_type_id")
@@ -37,5 +41,8 @@ public class Application {
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
+    @ManyToOne
+    @JoinColumn(name = "to_employee_id")
+    private Employee destinationEmployee;
 
 }

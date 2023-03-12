@@ -50,7 +50,7 @@ public class EmployeeServiceImpl implements com.backend.swp.apalary.service.Empl
     @Transactional
     public ResponseEntity<List<EmployeeDTO>> getAllEmployee() {
         logger.info("{}{}", GET_EMPLOYEE_MESSAGE, "all");
-        List<Employee> employees = employeeRepository.findAll();
+        List<Employee> employees = employeeRepository.findEmployeeByStatus(Status.ACTIVE);
         List<EmployeeDTO> employeeDTOS = employees.stream().map(employee -> modelMapper.map(employee, EmployeeDTO.class)).toList();
         logger.info("Get all employee successfully.");
         return new ResponseEntity<>(employeeDTOS, HttpStatus.OK);
@@ -63,11 +63,7 @@ public class EmployeeServiceImpl implements com.backend.swp.apalary.service.Empl
             logger.warn("{}" , ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (!employeeDTO.getId().equals(userId)) {
-            logger.warn("{}" , ServiceMessage.INVALID_ARGUMENT_MESSAGE);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Employee employee = employeeRepository.findEmployeeByIdAndStatus(employeeDTO.getId(), Status.ACTIVE);
+        Employee employee = employeeRepository.findEmployeeByIdAndStatus(userId, Status.ACTIVE);
         if (employee == null) {
             logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -85,7 +81,7 @@ public class EmployeeServiceImpl implements com.backend.swp.apalary.service.Empl
             employee.setPhone(employeeDTO.getPhone());
         }
         if (employeeDTO.getEmail() != null) {
-            employee.setEmail(employee.getEmail());
+            employee.setEmail(employeeDTO.getEmail());
         }
         employeeRepository.save(employee);
         logger.info("Update profile successfully.");

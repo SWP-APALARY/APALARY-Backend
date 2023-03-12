@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "contract")
@@ -17,12 +18,14 @@ public class Contract {
     @Column
     @Id
     private String id;
+    @Column(name = "employee_name")
+    private String nameOfEmployee;
     @Column
     private Integer base;
     @Column
     private Integer tax;
     @Column
-    private Integer assurances;
+    private Double assurances;
     @Column
     private String description;
     @Column(name = "signed_date", updatable = false)
@@ -47,4 +50,17 @@ public class Contract {
             inverseJoinColumns = @JoinColumn(name = "rule_salary_rule_number")
     )
     List<RuleSalary> ruleSalaries;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contract contract = (Contract) o;
+        return Objects.equals(id, contract.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

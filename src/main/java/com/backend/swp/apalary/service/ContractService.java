@@ -12,6 +12,9 @@ public interface ContractService {
     ResponseEntity<Void> resignContract(ContractDTO contractDTO, String employeeId);
     ResponseEntity<List<ContractResponseInList>> getAllContract();
     ResponseEntity<ContractDTO> getContractById(String id);
+
+    ResponseEntity<List<ContractResponseInList>> getContractNotAssigned();
+
     ResponseEntity<Void> deleteContract(String id);
     ResponseEntity<ContractDTO> getContractByUserId(String userId);
     ResponseEntity<List<RuleSalaryDTO>> getAllRuleSalary();

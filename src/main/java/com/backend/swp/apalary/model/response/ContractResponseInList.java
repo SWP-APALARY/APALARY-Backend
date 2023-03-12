@@ -15,14 +15,16 @@ import java.sql.Date;
 public class ContractResponseInList{
     private String id;
     private String employeeId;
+    private String nameOfEmployee;
     private Integer base;
     private Integer tax;
-    private Integer assurance;
+    private Double socialAssurances;
+    private Double medicalAssurances;
+    private Double accidentalAssurances;
     private String description;
     private Date signedDate;
     private Date startDate;
     private Date endDate;
     private Status status;
     private String contractTypeType;
-    private String employeeName;
 }

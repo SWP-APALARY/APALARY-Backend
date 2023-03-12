@@ -30,6 +30,8 @@ public class Employee implements UserDetails {
     private String password;
     @Column
     private String name;
+    @Column
+    private int gender;
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
     @Column
@@ -53,11 +55,13 @@ public class Employee implements UserDetails {
     @JoinColumn(name = "contract_id")
     private Contract contract;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
-    private List<Application> applications;
+    private List<Application> createApplications;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
     private List<JobOffering> jobOfferings;
-
-
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "destinationEmployee")
+    private List<Application> mentionedApplication;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
+    private List<Salary> salaries;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name())) ;
