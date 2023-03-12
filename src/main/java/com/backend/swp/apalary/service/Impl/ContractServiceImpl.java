@@ -216,6 +216,23 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
     }
 
     @Override
+    @Transactional
+    public ResponseEntity<List<ContractResponseInList>> getInactiveContract() {
+        logger.info("{}{}", GET_CONTRACT_MESSAGE, "inactive contracts");
+        List<Contract> contracts = contractRepository.findContractByStatus(Status.INACTIVE);
+        List<ContractResponseInList> contractDTOS = contracts.stream().map(contract -> {
+            ContractResponseInList dto = modelMapper.map(contract, ContractResponseInList.class);
+            dto.setSocialAssurances(8.0);
+            dto.setMedicalAssurances(1.5);
+            dto.setAccidentalAssurances(1.0);
+            return dto;
+        }).toList();
+        logger.info("Get all inactive contracts successfully.");
+        return new ResponseEntity<>(contractDTOS, HttpStatus.OK);
+
+    }
+
+    @Override
     public ResponseEntity<Void> deleteContract(String id) {
         logger.info("{}{}", DELETE_CONTRACT_MESSAGE, id);
         if (id == null) {

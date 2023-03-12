@@ -31,6 +31,11 @@ public class ContractController {
     public ResponseEntity<List<ContractResponseInList>> getAllContract() {
         return contractService.getAllContract();
     }
+    @Operation(summary = "Get all inactive contract")
+    @GetMapping("/all/inactive")
+    public ResponseEntity<List<ContractResponseInList>> getInactiveContracts() {
+        return contractService.getInactiveContract();
+    }
     @Operation(summary = "Get contract by id")
     @GetMapping("/{id}")
     public ResponseEntity<ContractDTO> getContractById(@PathVariable String id) {
