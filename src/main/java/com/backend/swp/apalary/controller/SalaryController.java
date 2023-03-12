@@ -21,7 +21,23 @@ public class SalaryController {
     }
     @Operation(summary = "Get salary of current user")
     @GetMapping("/self")
-    public ResponseEntity<List<SalaryDTO>> getSalaryByEmployeeId(@RequestAttribute(required = false) String userId) {
+    public ResponseEntity<List<SalaryDTO>> getSalaryOfCurrentEmployee(@RequestAttribute(required = false) String userId) {
         return salaryService.getSalaryByEmployeeId(userId);
+    }
+    @Operation(summary = "Get all salary of an employee")
+    @GetMapping("/{employeeId}")
+    public ResponseEntity<List<SalaryDTO>> getSalaryByEmployeeId(@PathVariable String employeeId) {
+        return salaryService.getSalaryByEmployeeId(employeeId);
+    }
+    @Operation(summary = "Get salary of an employee in a specific month")
+    @GetMapping("/employee")
+    public ResponseEntity<SalaryDTO> getSalaryOfAnEmployeeWithSpecificMonth(@RequestParam String employeeId, @RequestParam Integer month, @RequestParam Integer year) {
+        return salaryService.getSalaryOfAnEmployeeByMonthAndYear(employeeId, month, year);
+    }
+
+    @Operation(summary = "Get salary of current employee in a specific month")
+    @GetMapping("/self/month-and-year")
+    public ResponseEntity<SalaryDTO> getSalaryOfCurrentEmployeeWithSpecificMonth(@RequestAttribute(required = false) String userId, @RequestParam Integer month, @RequestParam Integer year) {
+        return salaryService.getSalaryOfAnEmployeeByMonthAndYear(userId, month, year);
     }
 }
