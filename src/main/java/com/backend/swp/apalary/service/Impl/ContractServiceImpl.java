@@ -1,7 +1,9 @@
 package com.backend.swp.apalary.service.Impl;
 
+import com.backend.swp.apalary.config.exception.BadRequestException;
 import com.backend.swp.apalary.model.constant.Status;
 import com.backend.swp.apalary.model.dto.ContractDTO;
+import com.backend.swp.apalary.model.dto.ContractTypeDTO;
 import com.backend.swp.apalary.model.dto.RuleSalaryDTO;
 import com.backend.swp.apalary.model.entity.Contract;
 import com.backend.swp.apalary.model.entity.ContractType;
@@ -13,6 +15,7 @@ import com.backend.swp.apalary.repository.ContractTypeRepository;
 import com.backend.swp.apalary.repository.EmployeeRepository;
 import com.backend.swp.apalary.repository.RuleSalaryRepository;
 import com.backend.swp.apalary.service.constant.ServiceMessage;
+import com.backend.swp.apalary.service.utils.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ContractServiceImpl implements com.backend.swp.apalary.service.ContractService {
@@ -47,7 +51,7 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
 
     @Override
     @Transactional
-    public ResponseEntity<Void> createContract(ContractDTO contractDTO) {
+    public ResponseEntity<Void> createContract(ContractDTO contractDTO) throws BadRequestException {
         logger.info("{}{}", CREATE_CONTRACT_MESSAGE, contractDTO);
         if (contractDTO == null) {
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
@@ -56,43 +60,29 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
         ContractType contractType = contractTypeRepository.findContractTypeById(contractDTO.getContractTypeId());
         if (contractType == null) {
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Contract type does not exists");
+        }
+        if (contractDTO.getSignedDate().after(contractDTO.getStartDate())) {
+            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
+            throw new BadRequestException("Signed date cannot after start date");
+        }
+        if (contractDTO.getStartDate().after(contractDTO.getEndDate())) {
+            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
+            throw new BadRequestException("Start date cannot after end date");
         }
         Contract contract = modelMapper.map(contractDTO, Contract.class);
+        contract.setId(createContractId());
         int base = contract.getBase();
-        int tax;
-        if (base <= 5000000) {
-            tax = 5;
-        }
-        else if (base <= 10000000) {
-            tax = 10;
-        }
-        else if (base <= 18000000) {
-            tax = 15;
-        }
-        else if (base <= 32000000) {
-            tax = 20;
-        } else if (base <= 52000000) {
-            tax = 25;
-        } else if (base <= 80000000) {
-            tax = 30;
-        } else {
-            tax = 35;
-        }
-        contract.setTax(tax);
-        contract.setAssurances(8 + 1.5 + 1);
+        contract.setTax(Utils.calculateTax(base, contractDTO.getNumberOfDependents()));
+        contract.setAssurances(Utils.calculateAssurances(base));
         contract.setStatus(Status.ACTIVE);
         contract.setContractType(contractType);
         contract.setRuleSalaries(new ArrayList<>());
-        for (int ruleNumber : contractDTO.getRuleSalaryRuleNumber()) {
-            RuleSalary ruleSalary = ruleSalaryRepository.findRuleSalaryByRuleNumber(ruleNumber);
-            if (ruleSalary == null) {
-                logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+        List<RuleSalary> ruleSalaries = ruleSalaryRepository.findAll();
+        ruleSalaries.forEach(ruleSalary ->  {
             contract.getRuleSalaries().add(ruleSalary);
             ruleSalary.getContracts().add(contract);
-        }
+        });
         contractRepository.save(contract);
         logger.info("Create Contract successfully.");
         return new ResponseEntity<>(HttpStatus.OK);
@@ -122,40 +112,18 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Contract contract = modelMapper.map(contractDTO, Contract.class);
+        contract.setId(createContractId());
         int base = contract.getBase();
-        int tax;
-        if (base <= 5000000) {
-            tax = 5;
-        }
-        else if (base <= 10000000) {
-            tax = 10;
-        }
-        else if (base <= 18000000) {
-            tax = 15;
-        }
-        else if (base <= 32000000) {
-            tax = 20;
-        } else if (base <= 52000000) {
-            tax = 25;
-        } else if (base <= 80000000) {
-            tax = 30;
-        } else {
-            tax = 35;
-        }
-        contract.setTax(tax);
-        contract.setAssurances(8 + 1.5 + 1);
+        contract.setTax(Utils.calculateTax(base, contractDTO.getNumberOfDependents()));
+        contract.setAssurances(Utils.calculateAssurances(base));
         contract.setStatus(Status.ACTIVE);
         contract.setContractType(contractType);
         contract.setRuleSalaries(new ArrayList<>());
-        for (int ruleNumber : contractDTO.getRuleSalaryRuleNumber()) {
-            RuleSalary ruleSalary = ruleSalaryRepository.findRuleSalaryByRuleNumber(ruleNumber);
-            if (ruleSalary == null) {
-                logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+        List<RuleSalary> ruleSalaries = ruleSalaryRepository.findAll();
+        ruleSalaries.forEach(ruleSalary ->  {
             contract.getRuleSalaries().add(ruleSalary);
             ruleSalary.getContracts().add(contract);
-        }
+        });
         Contract oldContract = employee.getContract();
         oldContract.setStatus(Status.INACTIVE);
         contractRepository.save(oldContract);
@@ -216,6 +184,23 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
     }
 
     @Override
+    @Transactional
+    public ResponseEntity<List<ContractResponseInList>> getInactiveContract() {
+        logger.info("{}{}", GET_CONTRACT_MESSAGE, "inactive contracts");
+        List<Contract> contracts = contractRepository.findContractByStatus(Status.INACTIVE);
+        List<ContractResponseInList> contractDTOS = contracts.stream().map(contract -> {
+            ContractResponseInList dto = modelMapper.map(contract, ContractResponseInList.class);
+            dto.setSocialAssurances(8.0);
+            dto.setMedicalAssurances(1.5);
+            dto.setAccidentalAssurances(1.0);
+            return dto;
+        }).toList();
+        logger.info("Get all inactive contracts successfully.");
+        return new ResponseEntity<>(contractDTOS, HttpStatus.OK);
+
+    }
+
+    @Override
     public ResponseEntity<Void> deleteContract(String id) {
         logger.info("{}{}", DELETE_CONTRACT_MESSAGE, id);
         if (id == null) {
@@ -265,6 +250,19 @@ public class ContractServiceImpl implements com.backend.swp.apalary.service.Cont
         return new ResponseEntity<>(ruleSalaries, HttpStatus.OK);
     }
 
+    @Override
+    @Transactional
+    public ResponseEntity<List<ContractTypeDTO>> getAllContractType() {
+        logger.info("Get all contract type");
+        List<ContractType> contractTypes = contractTypeRepository.findAll();
+        List<ContractTypeDTO> contractTypeDTOS = contractTypes.stream().map(contractType -> modelMapper.map(contractType, ContractTypeDTO.class)).toList();
+        logger.info("Get all contract type successfully.");
+        return new ResponseEntity<>(contractTypeDTOS, HttpStatus.OK);
+    }
 
+    private String createContractId() {
+        String lastContractId = contractRepository.lastContractId("CT%");
+        return Utils.generateIdWithPrefix(Objects.requireNonNullElse(lastContractId, "CT0000"));
+    }
 
 }

@@ -40,6 +40,11 @@ public class Employee implements UserDetails {
     private String phone;
     @Column
     private String email;
+    @Column
+    @Basic(fetch = FetchType.LAZY)
+    private String avatar;
+    @Column
+    private String link;
     @Enumerated(EnumType.STRING)
     @Column
     private Role role;
@@ -51,7 +56,7 @@ public class Employee implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "contract_id")
     private Contract contract;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")

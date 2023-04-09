@@ -1,5 +1,6 @@
 package com.backend.swp.apalary.config;
 
+import com.backend.swp.apalary.config.exception.BadRequestException;
 import com.backend.swp.apalary.config.exception.IdExistException;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.logging.log4j.LogManager;
@@ -20,11 +21,11 @@ import java.io.IOException;
 public class GlobalExceptionHandler {
     private static final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleUnwantedException(Exception e) {
-        logger.error("{}: {}",e.getMessage(),e.getClass());
-        return new ResponseEntity<>( "Unknown error", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<String> handleUnwantedException(Exception e) {
+//        logger.error("{}: {}",e.getMessage(),e.getClass());
+//        return new ResponseEntity<>( "Unknown error", HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
 //    @ExceptionHandler(ServiceException.class)
 //    public Response<String> handleCustomException(ServiceException e) {
@@ -38,11 +39,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Wrong input field type", HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
-    public ResponseEntity<String> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException e) {
-        logger.error("{}: {}", HttpStatus.BAD_REQUEST.value(), "Incorrect usage of the API");
-        return new ResponseEntity<>("Incorrect usage of the API", HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+//    public ResponseEntity<String> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException e) {
+//        logger.error("{}: {}", HttpStatus.BAD_REQUEST.value(), "Incorrect usage of the API");
+//        return new ResponseEntity<>("Incorrect usage of the API", HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<String> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
@@ -79,5 +80,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleJwtExpired(ExpiredJwtException e) {
         logger.info("{}: {}", HttpStatus.FORBIDDEN.value(), "Jwt token is expired");
         return new ResponseEntity<>("Jwt token is expired", HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<String> handleBadRequest(BadRequestException e) {
+        logger.info("{}: {}", HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

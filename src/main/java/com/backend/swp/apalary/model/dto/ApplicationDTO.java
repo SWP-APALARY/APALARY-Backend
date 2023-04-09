@@ -15,6 +15,7 @@ public class ApplicationDTO {
     private String title;
     private String description;
     private Timestamp createdTime;
+    private int lateDay;
     private int presentDay;
     private int absentDay;
     private int otDay;

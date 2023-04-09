@@ -112,7 +112,7 @@ public class JobOfferingServiceImpl implements com.backend.swp.apalary.service.J
             jobOffering.setDescription(jobOfferingDTO.getDescription());
         }
         if (jobOfferingDTO.getBaseSalary() != null) {
-            jobOffering.setBaseSalary(jobOffering.getBaseSalary());
+            jobOffering.setBaseSalary(jobOfferingDTO.getBaseSalary());
         }
         if (jobOfferingDTO.getStatus() != null) {
             jobOffering.setStatus(jobOfferingDTO.getStatus());
@@ -123,7 +123,6 @@ public class JobOfferingServiceImpl implements com.backend.swp.apalary.service.J
         if (jobOfferingDTO.getDepartmentId() != null) {
             Department department = departmentRepository.findDepartmentById(jobOfferingDTO.getDepartmentId());
             if (department == null) {
-                System.out.println(3);
                 logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }

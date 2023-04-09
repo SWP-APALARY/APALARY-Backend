@@ -15,9 +15,15 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     List<Application> findApplicationByStatus(Status status);
     List<Application> findApplicationByStatusAndApplicationTypeId(Status status, Integer applicationTypeId);
     List<Application> findApplicationByEmployeeId(String employeeId);
-    @Query(nativeQuery = true,value = "SELECT * FROM application\n" +
-            "WHERE YEAR(created_time) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)\n" +
-            "AND MONTH(created_time) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)\n" +
-            "AND application_type_id = 4")
+    @Query(nativeQuery = true,value = "SELECT *\n" +
+            "FROM (SELECT * FROM application \n" +
+            "            WHERE YEAR(created_time) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)\n" +
+            "            AND MONTH(created_time) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)\n" +
+            "            AND application_type_id = 4) a1\n" +
+            "where created_time in (\n" +
+            "\tSELECT max(created_time) \n" +
+            "    FROM application a2\n" +
+            "    where a1.to_employee_id = a2.to_employee_id\n" +
+            "    )")
     List<Application> findApplicationPreviousMonth();
 }

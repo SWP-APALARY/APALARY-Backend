@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
-    private String token;
-    private String role;
-    private String avatar;
+public class FeedbackLinkResponse {
+    private String id;
+    private String name;
+    private String link;
 }

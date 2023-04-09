@@ -8,4 +8,5 @@ import lombok.Data;
 public class RuleSalaryObtain {
     private String description;
     private Integer count;
+    private Integer money;
 }

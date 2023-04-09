@@ -19,13 +19,13 @@ public class Contract {
     @Id
     private String id;
     @Column(name = "employee_name")
-    private String nameOfEmployee;
+    private String nameEmp;
     @Column
     private Integer base;
     @Column
     private Integer tax;
     @Column
-    private Double assurances;
+    private Integer assurances;
     @Column
     private String description;
     @Column(name = "signed_date", updatable = false)
@@ -36,6 +36,8 @@ public class Contract {
     private Date endDate;
     @Column(name = "contract_image")
     private String contractImage;
+    @Column(name = "number_of_dependents")
+    private String numberOfDependents;
     @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToOne

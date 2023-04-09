@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class ApplicantDTO {
     private String email;
     private String cv;
     private int gender;
+    private Date interviewDate;
     private Status status;
     private Integer jobOfferingId;
     private String jobOfferingDepartmentName;

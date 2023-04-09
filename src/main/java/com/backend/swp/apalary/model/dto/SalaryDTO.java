@@ -19,6 +19,13 @@ public class SalaryDTO{
     private Integer penalty;
     private Integer total;
     private String description;
-    private String contractId;
+    private String employeeId;
+    private String employeeName;
+
+    private Integer tax;
+    private Integer socialAssurance;
+
+    private Integer medicalAssurance;
+    private Integer accidentalAssurance;
     private List<RuleSalaryObtain> ruleSalaryObtain;
 }

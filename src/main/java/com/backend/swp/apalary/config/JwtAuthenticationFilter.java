@@ -1,5 +1,6 @@
 package com.backend.swp.apalary.config;
 
+import com.backend.swp.apalary.model.constant.Role;
 import com.backend.swp.apalary.model.entity.Employee;
 import com.backend.swp.apalary.model.entity.Resident;
 import com.backend.swp.apalary.service.JWTService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.net.http.HttpResponse;
 
 @Component
 @RequiredArgsConstructor
@@ -36,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
         try {
             jwt = authHeader.substring(7);
             username = jwtService.extractUsername(jwt);
@@ -52,9 +55,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     if (userDetails instanceof Employee employee) {
                         request.setAttribute("userId", employee.getId());
                         request.setAttribute("userUsername", employee.getUsername());
+                        request.setAttribute("userRole", employee.getRole());
                     } else if (userDetails instanceof Resident resident) {
                         request.setAttribute("userId", resident.getId());
                         request.setAttribute("userUsername", resident.getUsername());
+                        request.setAttribute("userRole", Role.RESIDENT);
                     }
                 }
             }

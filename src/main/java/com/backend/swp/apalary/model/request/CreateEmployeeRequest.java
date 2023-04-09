@@ -20,6 +20,7 @@ public class CreateEmployeeRequest {
     private String identifyNumber;
     private String phone;
     private String email;
+    private String avatar;
     private Role role;
     private String managerId;
     private String departmentId;

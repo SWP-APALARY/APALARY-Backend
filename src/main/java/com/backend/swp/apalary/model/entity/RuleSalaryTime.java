@@ -22,6 +22,9 @@ public class RuleSalaryTime {
     @MapsId("ruleNumber")
     @JoinColumn(name = "rule_number")
     private RuleSalary ruleSalary;
+
     @Column(name = "obtained_time")
     private Integer time;
+    @Column
+    private Integer money;
 }

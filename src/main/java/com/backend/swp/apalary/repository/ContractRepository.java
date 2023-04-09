@@ -17,4 +17,7 @@ public interface ContractRepository extends JpaRepository<Contract, String> {
     @Query(nativeQuery = true, value = "SELECT * FROM contract\n" +
             "WHERE NOT id IN (SELECT contract_id FROM employee) AND status = 'ACTIVE'")
     List<Contract> findContractNotAssigned();
+
+    @Query(nativeQuery = true, value = "select max(id) from contract where id like ?1")
+    String lastContractId(String begin);
 }

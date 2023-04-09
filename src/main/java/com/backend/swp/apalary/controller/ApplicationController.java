@@ -1,5 +1,6 @@
 package com.backend.swp.apalary.controller;
 
+import com.backend.swp.apalary.model.constant.Role;
 import com.backend.swp.apalary.model.dto.ApplicationDTO;
 import com.backend.swp.apalary.service.ApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,79 +28,79 @@ public class ApplicationController {
 
     @Operation(summary = "Get all processing salary application for head manager")
     @GetMapping("/salary-increase/processing-r2")
-    public ResponseEntity<List<ApplicationDTO>> getProcessingSalaryApplicationForHeadManager() {
-        return applicationService.getProcessingSalaryIncreaseApplicationsForHeadManager();
+    public ResponseEntity<List<ApplicationDTO>> getProcessingSalaryApplicationForHeadManager(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getProcessingSalaryIncreaseApplicationsForHeadManager(userId, userRole);
     }
 
     @Operation(summary = "Get all processing salary application for head manager")
     @GetMapping("/salary-increase/processing")
-    public ResponseEntity<List<ApplicationDTO>> getProcessingSalaryApplication() {
-        return applicationService.getProcessingSalaryIncreaseApplications();
+    public ResponseEntity<List<ApplicationDTO>> getProcessingSalaryApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getProcessingSalaryIncreaseApplications(userId, userRole);
     }
 
     @Operation(summary = "Get all active salary application")
     @GetMapping("/salary-increase/active")
-    public ResponseEntity<List<ApplicationDTO>> getActiveSalaryIncreaseApplication() {
-        return applicationService.getActiveSalaryIncreaseApplication();
+    public ResponseEntity<List<ApplicationDTO>> getActiveSalaryIncreaseApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getActiveSalaryIncreaseApplication(userId, userRole);
     }
 
     @Operation(summary = "Get all inactive salary application")
     @GetMapping("/salary-increase/inactive")
-    public ResponseEntity<List<ApplicationDTO>> getInactiveSalaryIncreaseApplication() {
-        return applicationService.getInactiveSalaryIncreaseApplication();
+    public ResponseEntity<List<ApplicationDTO>> getInactiveSalaryIncreaseApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getInactiveSalaryIncreaseApplication(userId, userRole);
     }
 
     @Operation(summary = "Get processing day leave application")
     @GetMapping("/day-leave/processing")
-    public ResponseEntity<List<ApplicationDTO>> getProcessingDayLeaveApplication() {
-        return applicationService.getProcessingDayLeaveApplication();
+    public ResponseEntity<List<ApplicationDTO>> getProcessingDayLeaveApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getProcessingDayLeaveApplication(userId, userRole);
     }
 
     @Operation(summary = "Get all active day leave application")
     @GetMapping("/day-leave/active")
-    public ResponseEntity<List<ApplicationDTO>> getActiveDayLeaveApplication() {
-        return applicationService.getActiveDayLeaveApplication();
+    public ResponseEntity<List<ApplicationDTO>> getActiveDayLeaveApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getActiveDayLeaveApplication(userId, userRole);
     }
 
     @Operation(summary = "Get all inactive day leave application")
     @GetMapping("/day-leave/inactive")
-    public ResponseEntity<List<ApplicationDTO>> getInactiveDayLeaveApplication() {
-        return applicationService.getInactiveDayLeaveApplication();
+    public ResponseEntity<List<ApplicationDTO>> getInactiveDayLeaveApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getInactiveDayLeaveApplication(userId, userRole);
     }
 
     @Operation(summary = "Get all processing recruitment application")
     @GetMapping("/recruitment/processing")
-    public ResponseEntity<List<ApplicationDTO>> getProcessingRecruitmentApplication() {
-        return applicationService.getProcessingRecruitment();
+    public ResponseEntity<List<ApplicationDTO>> getProcessingRecruitmentApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getProcessingRecruitment(userId, userRole);
     }
 
     @Operation(summary = "Get all active recruitment application")
     @GetMapping("/recruitment/active")
-    public ResponseEntity<List<ApplicationDTO>> getActiveRecruitmentApplication() {
-        return applicationService.getActiveRecruitmentApplication();
+    public ResponseEntity<List<ApplicationDTO>> getActiveRecruitmentApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getActiveRecruitmentApplication(userId, userRole);
     }
     @Operation(summary = "Get all inactive recruitment application")
     @GetMapping("/recruitment/inactive")
-    public ResponseEntity<List<ApplicationDTO>> getInactiveRecruitmentApplication() {
-        return applicationService.getInactiveRecruitmentApplication();
+    public ResponseEntity<List<ApplicationDTO>> getInactiveRecruitmentApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getInactiveRecruitmentApplication(userId, userRole);
     }
 
     @Operation(summary = "Get all processing report application")
     @GetMapping("/report/processing")
-    public ResponseEntity<List<ApplicationDTO>> getProcessingReportApplication() {
-        return applicationService.getProcessingReport();
+    public ResponseEntity<List<ApplicationDTO>> getProcessingReportApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getProcessingReport(userId, userRole);
     }
 
     @Operation(summary = "Get all active report application")
     @GetMapping("/report/active")
-    public ResponseEntity<List<ApplicationDTO>> getActiveReportApplication() {
-        return applicationService.getActiveReport();
+    public ResponseEntity<List<ApplicationDTO>> getActiveReportApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getActiveReport(userId, userRole);
     }
 
     @Operation(summary = "Get all inactive report application")
     @GetMapping("/report/inactive")
-    public ResponseEntity<List<ApplicationDTO>> getInactiveReportApplication() {
-        return applicationService.getInactiveReport();
+    public ResponseEntity<List<ApplicationDTO>> getInactiveReportApplication(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return applicationService.getInactiveReport(userId, userRole);
     }
 
     @Operation(summary = "Get all application of current employee")

@@ -43,12 +43,12 @@ public class ApplicantServiceImpl implements ApplicantService {
     public ResponseEntity<Void> createApplicant(ApplicantDTO applicantDTO) {
         logger.info("{}{}", CREATE_APPLICANT_MESSAGE, applicantDTO);
         if (applicantDTO == null) {
-            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
+            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         JobOffering jobOffering = jobOfferingRepository.findJobOfferingByIdAndStatus(applicantDTO.getJobOfferingId(), Status.ACTIVE);
         if (jobOffering == null) {
-            logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE);
+            logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Applicant applicant = modelMapper.map(applicantDTO, Applicant.class);
@@ -128,10 +128,19 @@ public class ApplicantServiceImpl implements ApplicantService {
         logger.info("Get all rejected applicants successfully.");
         return new ResponseEntity<>(applicantDTOS, HttpStatus.OK);
     }
+
+    @Transactional
     @Override
-    public ResponseEntity<Void> acceptApplicant(Integer id, boolean isAccepted) {
-        if (isAccepted) logger.info("Accept applicant id: {}", id);
-        else logger.info("Reject applicant id: {}", id);
+    public ResponseEntity<List<ApplicantResponseInList>> getApplicantPassCV() {
+        logger.info("{}{}", GET_APPLICANT_MESSAGE, "all applicant pass cv round.");
+        List<Applicant> applicants = applicantRepository.findApplicantByStatus(Status.PROCESSING_2);
+        List<ApplicantResponseInList> applicantResponseInLists = applicants.stream().map(applicant -> modelMapper.map(applicant, ApplicantResponseInList.class)).toList();
+        logger.info("Get all applicant pass cv round successfully.");
+        return new ResponseEntity<>(applicantResponseInLists, HttpStatus.OK);
+    }
+    @Override
+    public ResponseEntity<Void> approveApplicantCVRound(Integer id) {
+        logger.info("Approve cv of applicant id: {}", id);
         if (id == null) {
             logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -140,11 +149,29 @@ public class ApplicantServiceImpl implements ApplicantService {
         if (applicant == null) {
             logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        if (isAccepted) applicant.setStatus(Status.ACTIVE);
-        else applicant.setStatus(Status.INACTIVE);
+        }applicant.setStatus(Status.PROCESSING_2);
+
         applicantRepository.save(applicant);
-        applicationEventMulticaster.multicastEvent(new EmailEvent(this, isAccepted, applicant.getName(), applicant.getEmail()));
+        applicationEventMulticaster.multicastEvent(new EmailEvent(this, 1, applicant.getId(), applicant.getName(), applicant.getEmail()));
+        logger.info("Approve cv of applicant {} successfully.", id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @Override
+    public ResponseEntity<Void> acceptApplicant(Integer id) {
+        logger.info("Accept applicant id: {}", id);
+
+        if (id == null) {
+            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Applicant applicant = applicantRepository.findApplicantByIdAndStatus(id, Status.PROCESSING_2);
+        if (applicant == null) {
+            logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        applicant.setStatus(Status.ACTIVE);
+        applicantRepository.save(applicant);
+        applicationEventMulticaster.multicastEvent(new EmailEvent(this, 2, applicant.getId(), applicant.getName(), applicant.getEmail()));
         JobOffering jobOffering = applicant.getJobOffering();
         int countEmployee = applicantRepository.countApplicantByJobOfferingAndStatus(jobOffering, Status.ACTIVE);
         if (countEmployee == jobOffering.getMaxEmployee()) {
@@ -156,7 +183,25 @@ public class ApplicantServiceImpl implements ApplicantService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Void> rejectApplicant(Integer id, String reason) {
+        logger.info("Reject applicant id: {}", id);
+        if (id == null) {
+            logger.warn("{}", ServiceMessage.INVALID_ARGUMENT_MESSAGE.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Applicant applicant = applicantRepository.findApplicantById(id);
+        if (applicant == null || (applicant.getStatus().equals(Status.ACTIVE) || applicant.getStatus().equals(Status.INACTIVE) )) {
+            logger.warn("{}", ServiceMessage.ID_NOT_EXIST_MESSAGE.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        applicant.setStatus(Status.INACTIVE);
 
+        applicantRepository.save(applicant);
+        applicationEventMulticaster.multicastEvent(new EmailEvent(this, 0, applicant.getId(), applicant.getName(), applicant.getEmail(), reason));
+        logger.info("Approve cv of applicant {} successfully.", id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
 }

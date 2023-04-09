@@ -1,6 +1,9 @@
 package com.backend.swp.apalary.controller;
 
+import com.backend.swp.apalary.config.exception.BadRequestException;
+import com.backend.swp.apalary.model.constant.Role;
 import com.backend.swp.apalary.model.dto.EmployeeDTO;
+import com.backend.swp.apalary.model.response.EmployeeResponseInList;
 import com.backend.swp.apalary.service.EmployeeService;
 import com.backend.swp.apalary.service.Impl.EmployeeServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,11 +21,24 @@ public class EmployeeController {
     public EmployeeController(EmployeeServiceImpl employeeService) {
         this.employeeService = employeeService;
     }
+    @Operation(summary = "Get all active employee")
+    @GetMapping("/all/active")
+    public ResponseEntity<List<EmployeeDTO>> getAllActiveEmployee(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return employeeService.getAllActiveEmployee(userId, userRole);
+    }
+
+    @Operation(summary = "Get all inactive employee")
+    @GetMapping("/all/inactive")
+    public ResponseEntity<List<EmployeeDTO>> getAllInactiveEmployee(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return employeeService.getAllInactiveEmployee(userId, userRole);
+    }
+
     @Operation(summary = "Get all employee")
     @GetMapping("/all")
-    public ResponseEntity<List<EmployeeDTO>> getAllEmployee() {
-        return employeeService.getAllEmployee();
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployee(@RequestAttribute(required = false) String userId, @RequestAttribute(required = false) Role userRole) {
+        return employeeService.getAllEmployee(userId, userRole);
     }
+
     @Operation(summary = "Get employee by id")
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable String id) {
@@ -38,9 +54,15 @@ public class EmployeeController {
     public ResponseEntity<Void> updateProfile(@RequestBody EmployeeDTO employeeDTO, @RequestAttribute(required = false) String userId) {
         return employeeService.updateEmployee(employeeDTO, userId);
     }
-    @Operation(summary = "Ban employee")
+    @Operation(summary = "Remove employee")
     @DeleteMapping("/{employeeId}")
-    public ResponseEntity<Void> banEmployee(@PathVariable String employeeId) {
-        return employeeService.banEmployee(employeeId);
+    public ResponseEntity<Void> removeEmployee(@PathVariable String employeeId, @RequestAttribute(required = false) String userId ) throws BadRequestException {
+        return employeeService.removeEmployee(employeeId, userId);
+    }
+
+    @Operation(summary = "Recover employee")
+    @PutMapping("/recover/{employeeId}")
+    public ResponseEntity<Void> recoverEmployee(@PathVariable String employeeId) {
+        return employeeService.recoverEmployee(employeeId);
     }
 }

@@ -9,6 +9,6 @@ public class RuleSalaryTimeConverter extends AbstractConverter<List<RuleSalaryTi
 
     @Override
     protected List<RuleSalaryObtain> convert(List<RuleSalaryTime> ruleSalaryTimes) {
-        return ruleSalaryTimes.stream().map(ruleSalaryTime -> new RuleSalaryObtain(ruleSalaryTime.getRuleSalary().getDescription(), ruleSalaryTime.getTime())).toList();
+        return ruleSalaryTimes.stream().map(ruleSalaryTime -> new RuleSalaryObtain(ruleSalaryTime.getRuleSalary().getDescription(), ruleSalaryTime.getTime(), ruleSalaryTime.getMoney())).toList();
     }
 }
