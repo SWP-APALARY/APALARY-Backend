@@ -4,6 +4,8 @@ import com.backend.swp.apalary.model.constant.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Date;
+
 @Entity
 @Getter
 @Setter
@@ -26,6 +28,8 @@ public class Applicant {
     private String cv;
     @Column
     private int gender;
+    @Column(name = "interview_date")
+    private Date interviewDate;
     @Column
     @Enumerated(EnumType.STRING)
     private Status status;

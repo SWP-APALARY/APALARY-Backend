@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,6 +30,7 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
+                .requestMatchers(HttpMethod.POST, "/auth/change-password").authenticated()
                 .requestMatchers("/auth/**")
                 .permitAll()
                 .requestMatchers(HttpMethod.POST, "/job-offering/**").hasAnyRole(Role.HR_MANAGER.name(), Role.HR_EMPLOYEE.name())
@@ -42,23 +44,29 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/applicant/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.MANAGER.name(), Role.HEAD_MANAGER.name())
                 .requestMatchers(HttpMethod.PUT, "/applicant/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())
                 .requestMatchers(HttpMethod.POST, "/contract/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.HEAD_MANAGER.name())
-                .requestMatchers(HttpMethod.GET, "/contract/all/**", "/contract/{id:[0-9A-Za-z]+}", "contract/rules-salary").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.MANAGER.name(), Role.HEAD_MANAGER.name())
+                .requestMatchers(HttpMethod.GET, "/contract/all/**", "/contract/{id:[0-9A-Za-z]+}", "/contract/rules-salary", "/contract/contract-type").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.MANAGER.name(), Role.HEAD_MANAGER.name())
                 .requestMatchers(HttpMethod.GET, "/contract").authenticated()
                 .requestMatchers(HttpMethod.GET, "/contract/unassigned").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HEAD_MANAGER.name())
                 .requestMatchers(HttpMethod.DELETE, "/contract/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())
                 .requestMatchers(HttpMethod.GET, "/department/**").authenticated()
                 .requestMatchers(HttpMethod.POST, "/application/**").authenticated()
-                .requestMatchers(HttpMethod.GET, "/application/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/application/**").hasAnyRole(Role.HR_MANAGER.name(), Role.HR_EMPLOYEE.name())
-                .requestMatchers(HttpMethod.GET, "/application/salary-increase/**", "/application/day-leave/**", "/application/recruitment/**", "/application/report/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())
+                .requestMatchers(HttpMethod.GET, "/application/salary-increase/**", "/application/day-leave/**", "/application/recruitment/**", "/application/report/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.HEAD_MANAGER.name(), Role.MANAGER.name())
                 .requestMatchers(HttpMethod.GET, "/application/salary-increase/processing-r2").hasRole(Role.HEAD_MANAGER.name())
+                .requestMatchers(HttpMethod.GET, "/application/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/application/approve/salary-increase/**", "/application/disapprove/salary-increase/**").hasRole(Role.HEAD_MANAGER.name())
+                .requestMatchers(HttpMethod.PUT, "/application/**").hasAnyRole(Role.HR_MANAGER.name(), Role.HR_EMPLOYEE.name())
                 .requestMatchers(HttpMethod.GET,"/application-type/**").authenticated()
-                .requestMatchers(HttpMethod.GET, "/salary/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/salary/detail")
+                .hasAnyRole(Role.EMPLOYEE.name(), Role.HR_EMPLOYEE.name(), Role.MANAGER.name(), Role.HR_MANAGER.name(), Role.HEAD_MANAGER.name())
+                .requestMatchers(HttpMethod.GET, "/salary/self/**").hasAnyRole(Role.EMPLOYEE.name(), Role.HR_EMPLOYEE.name(), Role.MANAGER.name(), Role.HR_MANAGER.name(), Role.HEAD_MANAGER.name())
+                .requestMatchers(HttpMethod.GET, "/salary/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.MANAGER.name(), Role.HR_MANAGER.name(), Role.HEAD_MANAGER.name())
+                .requestMatchers(HttpMethod.POST, "/salary/**").hasRole(Role.HR_MANAGER.name())
                 .requestMatchers(HttpMethod.GET, "/resident").hasAnyRole(Role.RESIDENT.name())
                 .requestMatchers(HttpMethod.GET, "/resident/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name())
                 .requestMatchers(HttpMethod.PUT, "/resident").hasRole(Role.RESIDENT.name())
                 .requestMatchers(HttpMethod.DELETE, "/resident/**").hasAnyRole(Role.EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.HR_EMPLOYEE.name(), Role.HEAD_MANAGER.name())
+                .requestMatchers(HttpMethod.POST, "/feedback/**").hasRole(Role.RESIDENT.name())
+                .requestMatchers(HttpMethod.GET, "/feedback/**").hasAnyRole(Role.HR_EMPLOYEE.name(), Role.HR_MANAGER.name(), Role.MANAGER.name(), Role.HEAD_MANAGER.name(), Role.EMPLOYEE.name())
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement()

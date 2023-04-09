@@ -11,7 +11,7 @@ import java.sql.Date;
 @NoArgsConstructor
 public class ContractDTO {
     private String id;
-    private String nameOfEmployee;
+    private String nameEmp;
     private Integer base;
     private Integer tax;
     private Double socialAssurance;
@@ -23,6 +23,7 @@ public class ContractDTO {
     private Date startDate;
     private Date endDate;
     private String contractImage;
+    private Integer numberOfDependents;
     private Integer contractTypeId;
     private int[] ruleSalaryRuleNumber;
     private String[] ruleSalaryDescription;

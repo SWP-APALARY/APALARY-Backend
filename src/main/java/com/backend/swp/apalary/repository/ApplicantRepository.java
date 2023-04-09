@@ -14,5 +14,6 @@ public interface ApplicantRepository extends JpaRepository<Applicant, Integer> {
     Applicant findApplicantById(Integer id);
     List<Applicant> findApplicantByStatus(Status status);
     List<Applicant> findApplicantByStatusAndJobOffering(Status status, JobOffering jobOffering);
+
     int countApplicantByJobOfferingAndStatus(JobOffering jobOffering, Status status);
 }

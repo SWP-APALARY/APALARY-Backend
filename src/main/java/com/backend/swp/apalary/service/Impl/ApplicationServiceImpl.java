@@ -1,9 +1,11 @@
 package com.backend.swp.apalary.service.Impl;
 
+import com.backend.swp.apalary.model.constant.Role;
 import com.backend.swp.apalary.model.constant.Status;
 import com.backend.swp.apalary.model.dto.ApplicationDTO;
 import com.backend.swp.apalary.model.entity.Application;
 import com.backend.swp.apalary.model.entity.ApplicationType;
+import com.backend.swp.apalary.model.entity.Department;
 import com.backend.swp.apalary.model.entity.Employee;
 import com.backend.swp.apalary.repository.ApplicationRepository;
 import com.backend.swp.apalary.repository.ApplicationTypeRepository;
@@ -54,7 +56,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         Application application = modelMapper.map(applicationDTO, Application.class);
         application.setId(null);
-        application.setStatus(Status.PROCESSING);
+        if (applicationDTO.getApplicationTypeId() == 4) application.setStatus(Status.ACTIVE);
+        else application.setStatus(Status.PROCESSING);
         application.setApplicationType(applicationType);
         application.setEmployee(employee);
         applicationRepository.save(application);
@@ -80,9 +83,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getProcessingSalaryIncreaseApplicationsForHeadManager() {
+    public ResponseEntity<List<ApplicationDTO>> getProcessingSalaryIncreaseApplicationsForHeadManager(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Processing Salary Increase application for head manager");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING_2, 1);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING_2, 1, userId, role);
         logger.info("Get processing Salary Increase application for head manager successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
 
@@ -90,54 +93,54 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getProcessingSalaryIncreaseApplications() {
+    public ResponseEntity<List<ApplicationDTO>> getProcessingSalaryIncreaseApplications(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Processing Salary Increase application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 1);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 1, userId, role);
         logger.info("Get processing Salary Increase application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getActiveSalaryIncreaseApplication() {
+    public ResponseEntity<List<ApplicationDTO>> getActiveSalaryIncreaseApplication(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Active Salary Increase application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 1);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 1, userId, role);
         logger.info("Get active Salary Increase application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getInactiveSalaryIncreaseApplication() {
+    public ResponseEntity<List<ApplicationDTO>> getInactiveSalaryIncreaseApplication(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Inactive Salary Increase application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 1);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 1, userId, role);
         logger.info("Get inactive Salary Increase application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getProcessingDayLeaveApplication() {
+    public ResponseEntity<List<ApplicationDTO>> getProcessingDayLeaveApplication(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Processing Day leave application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 2);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 2, userId, role);
         logger.info("Get processing day leave application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getActiveDayLeaveApplication() {
+    public ResponseEntity<List<ApplicationDTO>> getActiveDayLeaveApplication(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Active Day leave application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 2);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 2, userId, role);
         logger.info("Get active day leave application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getInactiveDayLeaveApplication() {
+    public ResponseEntity<List<ApplicationDTO>> getInactiveDayLeaveApplication(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Inactive Day Leave application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 2);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 2, userId, role);
         logger.info("Get inactive Day Leave application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
@@ -145,9 +148,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getProcessingRecruitment() {
+    public ResponseEntity<List<ApplicationDTO>> getProcessingRecruitment(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Processing recruitment application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 3);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 3, userId, role);
         logger.info("Get processing recruitment application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
@@ -155,45 +158,45 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getActiveRecruitmentApplication() {
+    public ResponseEntity<List<ApplicationDTO>> getActiveRecruitmentApplication(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Active recruitment application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 3);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 3, userId, role);
         logger.info("Get active recruitment application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getInactiveRecruitmentApplication() {
+    public ResponseEntity<List<ApplicationDTO>> getInactiveRecruitmentApplication(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Inactive recruitment application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 3);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 3, userId, role);
         logger.info("Get inactive recruitment application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getProcessingReport() {
+    public ResponseEntity<List<ApplicationDTO>> getProcessingReport(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Processing Report application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 4);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.PROCESSING, 4, userId, role);
         logger.info("Get processing report application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getActiveReport() {
+    public ResponseEntity<List<ApplicationDTO>> getActiveReport(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Active Report application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 4);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.ACTIVE, 4, userId, role);
         logger.info("Get active report application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
 
     @Transactional
     @Override
-    public ResponseEntity<List<ApplicationDTO>> getInactiveReport() {
+    public ResponseEntity<List<ApplicationDTO>> getInactiveReport(String userId, Role role) {
         logger.info("{}{}", GET_APPLICATION_MESSAGE, "Inactive report application");
-        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 4);
+        List<ApplicationDTO> applicationDTOS = getApplicationByStatusAndApplicationType(Status.INACTIVE, 4, userId, role);
         logger.info("Get inactive report application successfully.");
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
@@ -207,8 +210,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         logger.info("Get all application of employee {} successfully.", employeeId);
         return new ResponseEntity<>(applicationDTOS, HttpStatus.OK);
     }
-    private List<ApplicationDTO> getApplicationByStatusAndApplicationType(Status status, int applicationTypeId) {
+    private List<ApplicationDTO> getApplicationByStatusAndApplicationType(Status status, int applicationTypeId, String userId, Role role) {
         List<Application> applications = applicationRepository.findApplicationByStatusAndApplicationTypeId(status, applicationTypeId);
+        Employee employee = employeeRepository.findEmployeeByIdAndStatus(userId, Status.ACTIVE);
+        Department department = employee.getDepartment();
+        if (role.equals(Role.MANAGER)) {
+            applications = applications.stream().filter(application -> application.getDestinationEmployee().getDepartment().equals(department)).toList();
+        }
         return applications.stream().map(application -> modelMapper.map(application, ApplicationDTO.class)).toList();
     }
     @Override
@@ -233,7 +241,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             logger.warn(ServiceMessage.ID_NOT_EXIST_MESSAGE);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (!application.getApplicationType().getId().equals(4)) application.setStatus(Status.ACTIVE);
+        if (!application.getApplicationType().getId().equals(1)) application.setStatus(Status.ACTIVE);
         else application.setStatus(Status.PROCESSING_2);
         applicationRepository.save(application);
         logger.info("Approve application id {} successfully.", id);

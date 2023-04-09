@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -15,6 +17,6 @@ public class ApplicantResponseInList {
     private String phone;
     private String email;
     private int gender;
-
+    private Date interviewDate;
     private String jobOfferingDepartmentName;
 }

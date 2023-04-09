@@ -22,8 +22,6 @@ public class Feedback {
     @Column
     private String description;
     @Column
-    private String link;
-    @Column
     private Integer star;
     @Column(name = "created_date")
     private Date createdDate;

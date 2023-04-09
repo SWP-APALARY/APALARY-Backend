@@ -1,6 +1,8 @@
 package com.backend.swp.apalary.controller;
 
+import com.backend.swp.apalary.config.exception.BadRequestException;
 import com.backend.swp.apalary.model.dto.ContractDTO;
+import com.backend.swp.apalary.model.dto.ContractTypeDTO;
 import com.backend.swp.apalary.model.dto.RuleSalaryDTO;
 import com.backend.swp.apalary.model.response.ContractResponseInList;
 import com.backend.swp.apalary.service.ContractService;
@@ -18,7 +20,7 @@ public class ContractController {
     private final ContractService contractService;
     @Operation(summary = "Create contract by providing dto")
     @PostMapping
-    public ResponseEntity<Void> createContract(@RequestBody ContractDTO contractDTO) {
+    public ResponseEntity<Void> createContract(@RequestBody ContractDTO contractDTO) throws BadRequestException {
         return contractService.createContract(contractDTO);
     }
     @Operation(summary = "Resign contract")
@@ -55,6 +57,11 @@ public class ContractController {
     @GetMapping("/unassigned")
     public ResponseEntity<List<ContractResponseInList>> getAllUnassignedContract() {
         return contractService.getContractNotAssigned();
+    }
+    @Operation(summary = "Get all contract types")
+    @GetMapping("/contract-type")
+    public ResponseEntity<List<ContractTypeDTO>> getAllContractType() {
+        return contractService.getAllContractType();
     }
     @Operation(summary = "Delete contract by id")
     @DeleteMapping("/{id}")
